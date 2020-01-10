@@ -11,11 +11,11 @@ module.exports = env => {
 
   //定义通用插件
   let plugins = [
-    new CleanWebpackPlugin(),
-    new HtmlWebpackPlugin({
-      filename: "index.html",
-      template: "index.html"
-    })
+    new CleanWebpackPlugin()
+    // new HtmlWebpackPlugin({
+    //   filename: "index.html",
+    //   template: "index.html"
+    // })
   ];
 
   //当生产环境时，加入插件
@@ -23,10 +23,10 @@ module.exports = env => {
     plugins.push(
       new webpack.DefinePlugin({
         NODE_ENV: "production"
-      }),
-      new MiniCssExtractPlugin({
-        filename: "style.[hash:8].css"
       })
+      // new MiniCssExtractPlugin({
+      //   filename: "style.[hash:8].css"
+      // })
     );
   }
 
@@ -39,21 +39,23 @@ module.exports = env => {
       host: "127.0.0.1",
       port: 9090
     },
-    entry: {
-      components: "./src/js/global.js",
-      app: "./src/js/index.js"
-    },
+    // entry: {
+    //   components: "./src/js/global.js",
+    //   app: "./src/js/index.js"
+    // },
+    entry: "./src/index.js",
     output: {
-      filename: "[name].main.[chunkhash].js",
+      // filename: "[name].main.[chunkhash].js",
+      filename: "components.main.js",
       path: path.resolve(__dirname, "dist")
     },
     plugins,
     module: {
       rules: [
-        {
-          test: /\.css$/,
-          use: [{ loader: MiniCssExtractPlugin.loader }, "css-loader"]
-        },
+        // {
+        //   test: /\.css$/,
+        //   use: [{ loader: MiniCssExtractPlugin.loader }, "css-loader"]
+        // },
         {
           test: /\.js$/,
           exclude: /(node_modules|bower_components)/,
