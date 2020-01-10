@@ -52,7 +52,7 @@ module.exports = env => {
       rules: [
         {
           test: /\.css$/,
-          use: ["style-loader", "css-loader"]
+          use: [{ loader: MiniCssExtractPlugin.loader }, "css-loader"]
         },
         {
           test: /\.js$/,
