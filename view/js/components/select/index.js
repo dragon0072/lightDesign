@@ -177,6 +177,7 @@
       selectDom
     );
 
+    // TODO allowClear待修复
     if (allowClear) {
       selectDom.classList.add("light-select-allow-clear");
       _allowClear(selectDom);
