@@ -16,6 +16,14 @@
     wrapMap.thead;
   wrapMap.th = wrapMap.td;
 
+  //定义统一的xmlhttp请求
+  let lightDesignXhr = null;
+  if (window.XMLHttpRequest) {
+    lightDesignXhr = new XMLHttpRequest();
+  } else {
+    lightDesignXhr = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+
   function buildFragment(elems) {
     let elem,
       tmp,
@@ -144,29 +152,23 @@
 
       parsed = buildFragment([data]);
 
-      return merge([], parsed.childNodes);
+      return merge([], parsed.childNodes)[0];
     },
     httpGet: (url, options) => {
       const { params, headers, async } = options;
-      let xhr = null;
-      if (window.XMLHttpRequest) {
-        xhr = new XMLHttpRequest();
-      } else {
-        xhr = new ActiveXObject("Microsoft.XMLHTTP");
-      }
       var query = "";
       if (objectIsNotEmpty(params)) {
         query = urlJsonToString(params);
         url += "?" + query;
       }
-      if (xhr != null) {
-        xhr.open("GET", url, false);
+      if (lightDesignXhr != null) {
+        lightDesignXhr.open("GET", url, false);
         if (objectIsNotEmpty(headers)) {
-          setRequestHeader(xhr, headers);
+          setRequestHeader(lightDesignXhr, headers);
         }
-        xhr.send(null);
+        lightDesignXhr.send(null);
         if (!async) {
-          return xhr.responseText;
+          return lightDesignXhr.responseText;
         }
       } else {
         alert("Your browser does not support XMLHTTP.");
@@ -174,24 +176,27 @@
     },
     httpPost: (url, options) => {
       const { params, headers, async } = options;
-      let xhr = null;
-      if (window.XMLHttpRequest) {
-        xhr = new XMLHttpRequest();
-      } else {
-        xhr = new ActiveXObject("Microsoft.XMLHTTP");
-      }
-      if (xhr != null) {
-        xhr.open("POST", url, false);
+      if (lightDesignXhr != null) {
+        lightDesignXhr.open("POST", url, false);
         if (objectIsNotEmpty(headers)) {
-          setRequestHeader(xhr, headers);
+          setRequestHeader(lightDesignXhr, headers);
         }
-        xhr.send(params);
+        lightDesignXhr.send(params);
         if (!async) {
-          return xhr.responseText;
+          return lightDesignXhr.responseText;
         }
       } else {
         alert("Your browser does not support XMLHTTP.");
       }
+    },
+    guid: () => {
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(
+        c
+      ) {
+        var r = (Math.random() * 16) | 0,
+          v = c == "x" ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      });
     }
   };
   window.lightDesign = lightDesignGlobal;
