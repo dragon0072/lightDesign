@@ -10,4 +10,9 @@ window.onload = () => {
     ],
     style: "width:120px;"
   });
+
+  document.querySelector("#upload").lightUpload({
+    accept: ".xlsx",
+    multiple: true
+  });
 };

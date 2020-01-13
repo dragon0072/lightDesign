@@ -168,7 +168,7 @@
         }
         lightDesignXhr.send(null);
         if (!async) {
-          return lightDesignXhr.responseText;
+          return lightDesignXhr;
         }
       } else {
         alert("Your browser does not support XMLHTTP.");
@@ -183,7 +183,7 @@
         }
         lightDesignXhr.send(params);
         if (!async) {
-          return lightDesignXhr.responseText;
+          return lightDesignXhr;
         }
       } else {
         alert("Your browser does not support XMLHTTP.");

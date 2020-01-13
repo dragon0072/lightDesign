@@ -147,9 +147,10 @@
 
     let domData = dataSource;
     if (!dataSource.length && dataSource.url) {
-      let data = window.lightDesign.httpGet(dataSource.url, dataSource.options);
+      let res = window.lightDesign.httpGet(dataSource.url, dataSource.options),
+        data = [];
       if (typeof dataSource.requestEnd === "function") {
-        data = dataSource.requestEnd(data);
+        data = dataSource.requestEnd(JSON.stringify(res.responseText));
       }
       domData = data;
     }
