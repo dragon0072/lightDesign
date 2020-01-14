@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  function _uploadFile(file, action, headers, data, afterUpload) {
+  function _uploadFile(file, action, headers, data, beforeUpload, afterUpload) {
     let isSuccess = true;
     let formData = new FormData();
     formData.append("file", file);
@@ -12,6 +12,12 @@
         }
       }
     }
+    if (beforeUpload && typeof beforeUpload === "function") {
+      isSuccess = beforeUpload(file);
+    }
+
+    if (!isSuccess) return false;
+
     let res = window.lightDesign.httpPost(action, {
       params: formData,
       headers
@@ -27,7 +33,7 @@
     let fileDom = window.lightDesign.parseHTML(
       `<div class="">
         <span>
-          <div class="light-upload-list-item light-upload-list-item-done light-upload-list-item-list-type-text">
+          <div class="light-upload-list-item light-upload-list-item-error light-upload-list-item-list-type-text">
             <div class="light-upload-list-item-info">
               <span>
                 <i aria-label="图标: paper-clip" class="anticon anticon-paper-clip">
@@ -93,19 +99,33 @@
     fileDom.remove();
   }
 
-  function _changeHandle(event, uploadDom, action, onDownload, onRemove) {
+  function _changeHandle(
+    event,
+    uploadDom,
+    action,
+    data,
+    headers,
+    afterUpload,
+    beforeUpload,
+    onDownload,
+    onRemove
+  ) {
     let _this = event.currentTarget;
     [..._this.files].forEach(item => {
       if (!uploadDom.uploadFilesName[item.name]) {
         if (action) {
-          let isSuccess = _uploadFile(item, action, headers, data, afterUpload);
-          uploadDom.uploadFilesName[item.name] = true;
-          uploadDom.uploadFiles.push(item);
+          if (
+            _uploadFile(item, action, headers, data, beforeUpload, afterUpload)
+          ) {
+            uploadDom.uploadFilesName[item.name] = true;
+            uploadDom.uploadFiles.push(item);
+            _uploadSuccess(uploadDom, item, onDownload, onRemove);
+          }
         } else {
           uploadDom.uploadFilesName[item.name] = true;
           uploadDom.uploadFiles.push(item);
+          _uploadSuccess(uploadDom, item, onDownload, onRemove);
         }
-        _uploadSuccess(uploadDom, item, onDownload, onRemove);
       }
     });
   }
@@ -173,7 +193,17 @@
     uploadDom
       .querySelector('input[type="file"]')
       .addEventListener("change", event => {
-        _changeHandle(event, uploadDom, action, onDownload, onRemove);
+        _changeHandle(
+          event,
+          uploadDom,
+          action,
+          data,
+          headers,
+          afterUpload,
+          beforeUpload,
+          onDownload,
+          onRemove
+        );
       });
 
     return uploadDom;
