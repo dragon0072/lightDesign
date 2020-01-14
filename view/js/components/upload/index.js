@@ -78,6 +78,9 @@
       .querySelector('a[aria-id="delete"]')
       .addEventListener("click", event => {
         event.stopPropagation();
+        if (onRemove && typeof onRemove === "function") {
+          onRemove(file);
+        }
         _deleteFileHandle(event, uploadDom, fileDom, file, onRemove);
       });
 
@@ -128,6 +131,10 @@
         }
       }
     });
+  }
+
+  function _setDefaultFileList(fileList, uploadDom, onDownload, onRemove) {
+    _uploadSuccess(uploadDom, fileList, onDownload, onRemove);
   }
 
   /**
@@ -185,6 +192,9 @@
 
     uploadDom.__proto__.uploadFiles = [];
     uploadDom.__proto__.uploadFilesName = {};
+    uploadDom.__proto__.setDefaultFileList = fileList => {
+      _setDefaultFileList(fileList, uploadDom, onDownload, onRemove);
+    };
 
     uploadDom.querySelector("button").addEventListener("click", event => {
       uploadDom.querySelector('input[type="file"]').click();
