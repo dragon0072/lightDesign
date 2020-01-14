@@ -79,19 +79,19 @@
       .addEventListener("click", event => {
         event.stopPropagation();
         if (onRemove && typeof onRemove === "function") {
-          onRemove(file);
+          if (onRemove(file)) {
+            _deleteFileHandle(event, uploadDom, fileDom, file, onRemove);
+          }
+        } else {
+          _deleteFileHandle(event, uploadDom, fileDom, file, onRemove);
         }
-        _deleteFileHandle(event, uploadDom, fileDom, file, onRemove);
       });
 
-    uploadDom.querySelector(".light-upload-list").appendChild(fileDom);
+    uploadDom.querySelector(".upload-list").appendChild(fileDom);
   }
 
   function _deleteFileHandle(event, uploadDom, fileDom, file, onRemove) {
     let _this = event.currentTarget;
-    if (onRemove && typeof onRemove === "function") {
-      onRemove(file);
-    }
 
     uploadDom.uploadFiles.forEach((item, index) => {
       if (item.name === file.name) {
@@ -134,7 +134,9 @@
   }
 
   function _setDefaultFileList(fileList, uploadDom, onDownload, onRemove) {
-    _uploadSuccess(uploadDom, fileList, onDownload, onRemove);
+    fileList.forEach(file => {
+      _uploadSuccess(uploadDom, file, onDownload, onRemove);
+    });
   }
 
   /**
@@ -190,9 +192,9 @@
         <div class="light-upload-list light-upload-list-text"></div>
     </span>`);
 
-    uploadDom.__proto__.uploadFiles = [];
-    uploadDom.__proto__.uploadFilesName = {};
-    uploadDom.__proto__.setDefaultFileList = fileList => {
+    uploadDom.uploadFiles = [];
+    uploadDom.uploadFilesName = {};
+    uploadDom.setDefaultFileList = fileList => {
       _setDefaultFileList(fileList, uploadDom, onDownload, onRemove);
     };
 

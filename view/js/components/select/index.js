@@ -27,15 +27,15 @@
         liHtml = `<li role="option" unselectable="on" class="light-select-dropdown-menu-item" aria-selected="false" style="user-select: none;">${item[text]}</li>`;
       }
       let liItem = window.lightDesign.parseHTML(liHtml);
-      liItem.__proto__.selectValue = item[value];
-      liItem.__proto__.selectElementId = id;
+      liItem.selectValue = item[value];
+      liItem.selectElementId = id;
       optionsDom.querySelector("ul").appendChild(liItem);
     });
     selectDom
       .querySelector(".light-select-selection")
       .insertBefore(inputDom, selectDom.querySelector(".light-select-arrow"));
     selectDom.appendChild(optionsDom);
-    selectDom.__proto__.selectValue = defaultValue || "";
+    selectDom.selectValue = defaultValue || "";
   }
 
   function _allowClear(dom) {
@@ -222,7 +222,7 @@
               ".light-select-selection-selected-value"
             ).innerText = _this.innerText;
           }
-          selectDom.__proto__.selectValue = _this.selectValue;
+          selectDom.selectValue = _this.selectValue;
           _toggleDropDownList(selectDom);
           if (onSelect && typeof onSelect === "function") {
             onSelect(_this.selectValue);

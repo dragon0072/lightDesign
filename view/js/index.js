@@ -6,6 +6,10 @@ window.onload = () => {
       {
         code: 1,
         name: 1
+      },
+      {
+        code: 2,
+        name: 2
       }
     ],
     style: "width:120px;"
