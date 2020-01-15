@@ -189,6 +189,62 @@
         alert("Your browser does not support XMLHTTP.");
       }
     },
+    httpUpload: function(url, options) {
+      const { params, headers, async } = options;
+      if (lightDesignXhr != null) {
+        lightDesignXhr.open("POST", url, false);
+        if (objectIsNotEmpty(headers)) {
+          setRequestHeader(lightDesignXhr, headers);
+        }
+        lightDesignXhr.send(params);
+        if (!async) {
+          return lightDesignXhr;
+        }
+      } else {
+        alert("Your browser does not support XMLHTTP.");
+      }
+    },
+    httpDownload: function(url, options) {
+      const { params, headers } = options;
+      //拼接url加query
+      var query = "",
+        arrQuery = [];
+      if (objectIsNotEmpty(params)) {
+        for (var key in params) {
+          arrQuery.push(key + "=" + params[key]);
+        }
+        query = arrQuery.join("&");
+        url += "?" + query;
+      }
+      if (lightDesignXhr != null) {
+        lightDesignXhr.responseType = "blob";
+        lightDesignXhr.open("GET", url, true);
+        if (objectIsNotEmpty(headers)) {
+          setRequestHeader(lightDesignXhr, headers);
+        }
+        lightDesignXhr.send(null);
+        lightDesignXhr.onreadystatechange = () => {
+          if (
+            lightDesignXhr.status === 200 &&
+            lightDesignXhr.readyState === 4
+          ) {
+            let blob = lightDesignXhr.response;
+            if (window.navigator.msSaveOrOpenBlob) {
+              navigator.msSaveBlob(blob, filename);
+            } else {
+              var link = document.createElement("a");
+              link.target = "_blank";
+              link.href = window.URL.createObjectURL(blob);
+              link.download = filename;
+              link.click();
+              window.URL.revokeObjectURL(link.href);
+            }
+          }
+        };
+      } else {
+        alert("Your browser does not support XMLHTTP.");
+      }
+    },
     guid: () => {
       return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(
         c
@@ -209,6 +265,19 @@
   //字符串去除回车和空格
   String.prototype.replaceEnter = function() {
     return this.replace(/[\r\n]\ +/g, "");
+  };
+
+  //字符串判断是否为空
+  String.prototype.isNullOrEmpty = function() {
+    if (
+      this == null ||
+      this == undefined ||
+      this.replace(/(^\s*)|(\s*$)/g, "") == ""
+    ) {
+      return true;
+    } else {
+      return false;
+    }
   };
 
   //日期格式化

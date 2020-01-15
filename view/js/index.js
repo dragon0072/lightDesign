@@ -19,4 +19,11 @@ window.onload = () => {
     accept: ".xlsx",
     multiple: true
   });
+
+  document.querySelector("#alert").lightAlert({
+    type: "success",
+    message: "success",
+    showIcon: true,
+    closable: true
+  });
 };

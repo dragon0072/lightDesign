@@ -18,7 +18,7 @@
 
     if (!isSuccess) return false;
 
-    let res = window.lightDesign.httpPost(action, {
+    let res = window.lightDesign.httpUpload(action, {
       params: formData,
       headers
     });
