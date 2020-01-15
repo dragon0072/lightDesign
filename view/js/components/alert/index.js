@@ -82,6 +82,16 @@
     return dom;
   }
 
+  //修改显示信息
+  function _modifyMessage(message = "", description = "", dom) {
+    if (!message.isNullOrEmpty()) {
+      dom.querySelector(".light-alert-message").innerText = message;
+    }
+    if (!description.isNullOrEmpty()) {
+      dom.querySelector(".light-alert-description").innerText = description;
+    }
+  }
+
   /**
    * 警告提示，展现需要关注的信息。
    * @param {*} props {
@@ -103,7 +113,19 @@
       showIcon = true
     } = props;
 
-    return _renderAlert(type, message, description, banner, closable, showIcon);
+    let alertDom = _renderAlert(
+      type,
+      message,
+      description,
+      banner,
+      closable,
+      showIcon
+    );
+
+    alertDom.lightAlert.modifyMessage = (message, description) => {
+      _modifyMessage(message, description);
+    };
+    return alertDom;
   }
 
   HTMLElement.prototype.lightAlert = function(props) {
