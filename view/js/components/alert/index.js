@@ -84,12 +84,8 @@
 
   //修改显示信息
   function _modifyMessage(message = "", description = "", dom) {
-    if (!message.isNullOrEmpty()) {
-      dom.querySelector(".light-alert-message").innerText = message;
-    }
-    if (!description.isNullOrEmpty()) {
-      dom.querySelector(".light-alert-description").innerText = description;
-    }
+    dom.querySelector(".light-alert-message").innerText = message;
+    dom.querySelector(".light-alert-description").innerText = description;
   }
 
   /**
@@ -110,7 +106,7 @@
       description = "",
       message = "",
       type = "info",
-      showIcon = true
+      showIcon = false
     } = props;
 
     let alertDom = _renderAlert(
