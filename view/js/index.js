@@ -26,4 +26,8 @@ window.onload = () => {
     showIcon: true,
     closable: true
   });
+
+  document.querySelector("#pagination").lightPagination({
+    total: 100
+  });
 };
