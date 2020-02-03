@@ -30,26 +30,41 @@
   }
 
   //刷新页码列表
-  function _refreshPaginationHandler(event, oldIndex, newIndex) {
+  function _refreshPaginationHandler(
+    event,
+    oldIndex,
+    newIndex,
+    onChange,
+    onShowSizeChange
+  ) {
     let parentElem = event.currentTarget.closest("ul");
+    let isRefreshSuccess = true;
     if (
       parentElem.querySelector(`.light-pagination-item-${newIndex}`) &&
       !parentElem.querySelector(`.${pageJumpNextClass}`) &&
       !parentElem.querySelector(`.${pageJumpPrevClass}`)
     ) {
+      if (onChange && typeof onChange === "function") {
+        isRefreshSuccess = onChange(newIndex, parentElem.pagination.pageSize);
+        if (!isRefreshSuccess) return isRefreshSuccess;
+      }
       parentElem
         .querySelector(`.light-pagination-item-${oldIndex}`)
         .classList.remove(pageItemActiveClass);
       parentElem
         .querySelector(`.light-pagination-item-${newIndex}`)
         .classList.add(pageItemActiveClass);
-      return true;
+      return isRefreshSuccess;
     } else {
       //如果存在跳转五页，则进行处理
       if (
         parentElem.querySelector(`.${pageJumpPrevClass}`) ||
         parentElem.querySelector(`.${pageJumpNextClass}`)
       ) {
+        if (onChange && typeof onChange === "function") {
+          isRefreshSuccess = onChange(newIndex, parentElem.pagination.pageSize);
+          if (!isRefreshSuccess) return isRefreshSuccess;
+        }
         let elems = parentElem.querySelectorAll(".light-pagination-item");
         let pageCount = parseInt(elems[elems.length - 1].title);
         parentElem
@@ -116,7 +131,7 @@
         ) {
           parentElem.insertBefore(_returnJumpPageDom("next"), refDom);
         }
-        return true;
+        return isRefreshSuccess;
       }
       return false;
     }
@@ -144,13 +159,7 @@
           parseInt(event.currentTarget.title)
         )
       ) {
-        _toggleDomDisable(
-          parentElem,
-          parseInt(
-            parentElem.querySelector(`.light-pagination-item:nth-last-child(2)`)
-              .title
-          )
-        );
+        _toggleDomDisable(parentElem, parentElem.pagination.pageCount);
       }
     });
     return pageNumDom;
@@ -206,17 +215,22 @@
         _refreshPaginationHandler(event, currentIndex, currentIndex - 5);
       }
       if (isJumpSuccess) {
-        _toggleDomDisable(
-          parentElem,
-          parentElem.querySelector(".light-pagination-item:nth-last-child(2)")
-        );
+        _toggleDomDisable(parentElem, parentElem.pagination.pageCount);
       }
     });
     return jumpDom;
   }
 
   //生成页码列表
-  function _renderPageNumber(dom, current, pageSize, simple, total) {
+  function _renderPageNumber(
+    dom,
+    current,
+    pageSize,
+    simple,
+    total,
+    onChange,
+    onShowSizeChange
+  ) {
     let pageCount = Math.ceil(total / pageSize) || 1;
 
     let prevDom = window.lightDesign.parseHTML(
@@ -262,7 +276,15 @@
       let index = parseInt(
         dom.closest("ul").querySelector(`.${pageItemActiveClass}`).title || 1
       );
-      if (_refreshPaginationHandler(event, index, index + 1)) {
+      if (
+        _refreshPaginationHandler(
+          event,
+          index,
+          index + 1,
+          onChange,
+          onShowSizeChange
+        )
+      ) {
         _toggleDomDisable(dom, pageCount);
       }
     });
@@ -271,13 +293,26 @@
       let index = parseInt(
         dom.closest("ul").querySelector(`.${pageItemActiveClass}`).title
       );
-      if (_refreshPaginationHandler(event, index, index - 1)) {
+      if (
+        _refreshPaginationHandler(
+          event,
+          index,
+          index - 1,
+          onChange,
+          onShowSizeChange
+        )
+      ) {
         _toggleDomDisable(dom, pageCount);
       }
     });
 
     dom.insertBefore(prevDom, dom.querySelector(".light-pagination-item-1"));
     dom.appendChild(nextDom);
+
+    dom.pagination = {
+      pageCount,
+      pageSize
+    };
   }
 
   /**
@@ -314,7 +349,15 @@
       </ul>`
     );
 
-    _renderPageNumber(paginationDom, current, pageSize, simple, total);
+    _renderPageNumber(
+      paginationDom,
+      current,
+      pageSize,
+      simple,
+      total,
+      onChange,
+      onShowSizeChange
+    );
 
     return paginationDom;
   }
