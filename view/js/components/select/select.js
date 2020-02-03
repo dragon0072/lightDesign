@@ -5,10 +5,10 @@
       .parseHTML(`<div class="light-select-selection__rendered">
                     <div class="light-select-selection-selected-value" title="" style="display: block; opacity: 1;"></div>
                   </div>`);
-
+    //<div id="${id}" style="overflow: auto; transform: translateZ(0px);">
     let optionsDom = window.lightDesign.parseHTML(
       `<div class="light-select-dropdown light-select-dropdown--single light-select-dropdown-placement-bottomLeft light-select-dropdown-hidden" style="width: 100%; left: 0; top: 35px;">
-        <div id="${id}" style="overflow: auto; transform: translateZ(0px);">
+        <div style="overflow: auto; transform: translateZ(0px);">
           <ul role="listbox" class="light-select-dropdown-menu light-select-dropdown-menu-root light-select-dropdown-menu-vertical" tabindex="0"></ul>
         </div>
       </div>`
@@ -227,6 +227,7 @@
           if (onSelect && typeof onSelect === "function") {
             onSelect(_this.selectValue);
           }
+          document.querySelector(`#${_domId}`).remove();
         });
       });
 
