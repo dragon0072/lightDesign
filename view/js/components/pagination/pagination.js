@@ -54,6 +54,7 @@
       parentElem
         .querySelector(`.light-pagination-item-${newIndex}`)
         .classList.add(pageItemActiveClass);
+      parentElem.pagination.index = newIndex;
       return isRefreshSuccess;
     } else {
       //如果存在跳转五页，则进行处理
@@ -131,6 +132,7 @@
         ) {
           parentElem.insertBefore(_returnJumpPageDom("next"), refDom);
         }
+        parentElem.pagination.index = newIndex;
         return isRefreshSuccess;
       }
       return false;
@@ -311,7 +313,8 @@
 
     dom.pagination = {
       pageCount,
-      pageSize
+      pageSize,
+      index: current
     };
   }
 
