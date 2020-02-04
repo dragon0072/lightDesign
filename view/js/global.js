@@ -155,7 +155,7 @@
       return merge([], parsed.childNodes)[0];
     },
     httpGet: (url, options) => {
-      const { params, headers, async } = options;
+      const { params, headers, async = false } = options;
       var query = "";
       if (objectIsNotEmpty(params)) {
         query = urlJsonToString(params);
@@ -175,7 +175,7 @@
       }
     },
     httpPost: (url, options) => {
-      const { params, headers, async } = options;
+      const { params, headers, async = false } = options;
       if (lightDesignXhr != null) {
         lightDesignXhr.open("POST", url, false);
         if (objectIsNotEmpty(headers)) {
@@ -190,7 +190,7 @@
       }
     },
     httpUpload: function(url, options) {
-      const { params, headers, async } = options;
+      const { params, headers, async = false } = options;
       if (lightDesignXhr != null) {
         lightDesignXhr.open("POST", url, false);
         if (objectIsNotEmpty(headers)) {
