@@ -99,7 +99,10 @@
           newIndex === pageCount - 1
         ) {
           for (let i = pageCount - 4; i < pageCount; i++) {
-            parentElem.insertBefore(_returnPageNumDom(i, pageCount), refDom);
+            parentElem.insertBefore(
+              _returnPageNumDom(i, pageCount, onChange),
+              refDom
+            );
           }
           parentElem
             .querySelector(
@@ -112,7 +115,10 @@
             .classList.add(pageItemActiveClass);
         } else if (newIndex === 1 || newIndex < 1 || newIndex === 2) {
           for (let i = 2; i < 6; i++) {
-            parentElem.insertBefore(_returnPageNumDom(i, newIndex), refDom);
+            parentElem.insertBefore(
+              _returnPageNumDom(i, newIndex, onChange),
+              refDom
+            );
           }
           parentElem
             .querySelector(`.light-pagination-item-${newIndex || 1}`)
@@ -123,7 +129,10 @@
             if (i < 1 || i === 1 || i === pageCount || i > pageCount) {
               continue;
             }
-            parentElem.insertBefore(_returnPageNumDom(i, newIndex), refDom);
+            parentElem.insertBefore(
+              _returnPageNumDom(i, newIndex, onChange),
+              refDom
+            );
           }
         }
         if (
@@ -144,7 +153,7 @@
    * @param {number} page
    * @param {number} current
    */
-  function _returnPageNumDom(page, current) {
+  function _returnPageNumDom(page, current, onChange) {
     let pageNumDom = window.lightDesign.parseHTML(
       `<li title="${page}" class="light-pagination-item light-pagination-item-${page} ${
         page === current ? pageItemActiveClass : ""
@@ -158,7 +167,8 @@
         _refreshPaginationHandler(
           event,
           parseInt(currentElem.title),
-          parseInt(event.currentTarget.title)
+          parseInt(event.currentTarget.title),
+          onChange
         )
       ) {
         _toggleDomDisable(parentElem, parentElem.pagination.pageCount);
@@ -262,7 +272,7 @@
     );
 
     for (let i = 1; i <= pageCount; i++) {
-      let pageDom = _returnPageNumDom(i, current);
+      let pageDom = _returnPageNumDom(i, current, onChange);
       dom.appendChild(pageDom);
       if (pageCount > 9) {
         if (i === 5) {
