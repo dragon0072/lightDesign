@@ -67,15 +67,40 @@
       `<tr class="light-table-row light-table-row-level-0" data-row-key="${rowKey}"></tr>`
     );
     columns.forEach(column => {
-      let columnElem = window.lightDesign.parseHTML(
-        `<td class="light-table-row-cell-ellipsis" title="${
-          data[column.filename]
-        }">${
-          column.render && typeof column.render === "function"
-            ? column.render(data)
-            : data[column.filename]
-        }</td>`
-      );
+      const { align = "center", className, render, field, command } = column;
+      let columnElem;
+      if (command && command.length > 0) {
+        columnElem = window.lightDesign.parseHTML(
+          `<td class="light-table-row-cell-ellipsis" style="text-align:${align}"><span></span></td>`
+        );
+        command.forEach((item, index, arr) => {
+          const { name, click } = item;
+          let commandElem = window.lightDesign.parseHTML(`<a>${name}</a>`);
+          commandElem.addEventListener("click", event => {
+            if (click && typeof click === "function") {
+              click(data, event);
+            }
+          });
+          columnElem.appendChild(commandElem);
+          if (index + 1 < arr.length) {
+            columnElem.appendChild(
+              window.lightDesign.parseHTML(
+                `<div class="light-divider light-divider-vertical" role="separator"></div>`
+              )
+            );
+          }
+        });
+      } else {
+        columnElem = window.lightDesign.parseHTML(
+          `<td class="light-table-row-cell-ellipsis" style="text-align:${align};" title="${data[
+            field
+          ] || ""}">${
+            render && typeof render === "function"
+              ? render(data)
+              : data[field] || ""
+          }</td>`
+        );
+      }
       rowElem.appendChild(columnElem);
     });
     rowElem.rowData = data;
@@ -180,8 +205,9 @@
         className,
         render,
         title,
-        filename,
-        width = "auto"
+        field,
+        width = "auto",
+        command
       } = column;
       //添加colgroup
       _table
@@ -201,10 +227,10 @@
         window.lightDesign.parseHTML(
           `<th class="light-table-row-cell-ellipsis ${
             width !== "auto" ? "light-table-row-cell-break-word" : ""
-          }">
+          }" style="text-align:${align}">
             <span class="light-table-header-column">
               <div>
-                <span class="light-table-column-title">${title}</span>
+                <span class="light-table-column-title">${title || ""}</span>
                 <span class="light-table-column-sorter"></span>
               </div>
             </span>
@@ -242,8 +268,10 @@
   }
 
   function _refreshTableData(dataSource, _table) {
+    _toggleLoading(_table);
     _getTableDataHandle(dataSource);
     _renderTableBody(_table.lightTable.columns, _table);
+    _toggleLoading(_table);
   }
 
   /**
@@ -255,8 +283,9 @@
         className:string, 样式名
         render:function(dataItem),渲染方法
         title:string, 表头名称
-        filename:string, 对应数据源名称
-        width:string='auto' 宽度
+        field:string, 对应数据源名称
+        width:string='auto', 宽度
+        command:[json] //操作按钮
       }],表头配置
       dataSource:[json]/{
         transforms:{

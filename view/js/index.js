@@ -32,19 +32,29 @@ window.onload = () => {
     id: "app",
     columns: [
       {
-        filename: "index",
+        field: "index",
         title: "index",
         render: dataItem => {
           return "<a>123</a>";
         }
       },
       {
-        filename: "name",
+        field: "name",
         title: "name"
       },
       {
-        filename: "sex",
+        field: "sex",
         title: "sex"
+      },
+      {
+        command: [
+          {
+            name: "edit",
+            click: (dataItem, event) => {
+              console.log(dataItem);
+            }
+          }
+        ]
       }
     ],
     // dataSource: {
