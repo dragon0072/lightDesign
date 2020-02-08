@@ -52,13 +52,15 @@
         </div>
       </div>`
     );
-    _table.querySelector(".light-table-content").appendChild(emptyElem);
-    if (_table.querySelector("ul.light-table-pagination")) {
-      _table.querySelector("ul.light-table-pagination").remove();
+    if (!_table.querySelector(".light-table-placeholder")) {
+      _table.querySelector(".light-table-content").appendChild(emptyElem);
+      if (_table.querySelector("ul.light-table-pagination")) {
+        _table.querySelector("ul.light-table-pagination").remove();
+      }
+      _table.querySelectorAll("tbody>tr.light-table-row").forEach(item => {
+        item.remove();
+      });
     }
-    _table.querySelectorAll("tbody>tr.light-table-row").forEach(item => {
-      item.remove();
-    });
   }
 
   //生成表格行内容
@@ -107,7 +109,7 @@
     return rowElem;
   }
 
-  function _getTableDataHandle(dataSource) {
+  function _getTableDataHandle(dataSource, _table) {
     if (!dataSource.transforms) {
       _data = dataSource;
       _total = dataSource.length;
@@ -117,13 +119,26 @@
         url,
         type = "GET",
         params,
+        headers,
         data,
         total,
         requestEnd
       } = dataSource.transforms;
+      let query = params,
+        reqeustHeader = headers;
+      if (params && typeof params === "function") {
+        const { pagination } = _table.lightTable;
+        query = params(pagination || { pageIndex: 1, pageSize: 10 });
+      }
+
+      if (headers && typeof headers === "function") {
+        reqeustHeader = headers(query);
+      }
+
       if (type.toUpperCase() === "GET") {
         let res = window.lightDesign.httpGet(url, {
-          params
+          params: query,
+          headers: reqeustHeader
         });
 
         if (res.status === 200 && !res.response.isNullOrEmpty()) {
@@ -269,7 +284,7 @@
 
   function _refreshTableData(dataSource, _table) {
     _toggleLoading(_table);
-    _getTableDataHandle(dataSource);
+    _getTableDataHandle(dataSource, _table);
     _renderTableBody(_table.lightTable.columns, _table);
     _toggleLoading(_table);
   }
@@ -341,7 +356,7 @@
     _renderTableHeader(columns, _table);
 
     //获取数据
-    _getTableDataHandle(dataSource);
+    _getTableDataHandle(dataSource, _table);
 
     //生成翻页控件
     if (pageable) {
