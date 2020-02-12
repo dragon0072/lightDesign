@@ -150,11 +150,11 @@
         }
 
         if (data && typeof data === "function") {
-          _data = data(res);
+          _data = data(res) || [];
         }
 
         if (total && typeof total === "function") {
-          _total = total(res);
+          _total = total(res) || 0;
         }
 
         if (_data.length > 0 && _total === 0) {
@@ -163,6 +163,9 @@
         _isHttp = true;
       }
     }
+    _data.forEach(item => {
+      item._id = window.lightDesign.guid();
+    });
   }
 
   /**
@@ -282,11 +285,49 @@
     }
   }
 
+  //刷新数据源
   function _refreshTableData(dataSource, _table) {
     _toggleLoading(_table);
     _getTableDataHandle(dataSource, _table);
     _renderTableBody(_table.lightTable.columns, _table);
     _toggleLoading(_table);
+  }
+
+  //新增行
+  function _addNewRecord(data, _table) {
+    if (_isHttp) {
+      _table.lightTable.event.refresh();
+      return;
+    }
+    data._id = window.lightDesign.guid();
+    _data.splice(0, 0, data);
+    _refreshTableData(_data, _table);
+  }
+
+  //编辑行
+  function _editRecord(data, _table) {
+    if (_isHttp) {
+      _table.lightTable.event.refresh();
+      return;
+    }
+    let fileterData = _data.filter(item => item._id === data._id);
+    let index = _data.indexOf(fileterData);
+    _data.splice(index, 1, data);
+    _refreshTableData(_data, _table);
+  }
+
+  //删除行
+  function _removeRecord(_id, _table) {
+    if (_isHttp) {
+      _table.lightTable.event.refresh();
+      return;
+    }
+    let fileterData = _data.filter(item => item._id === _id);
+    let index = _data.indexOf(fileterData);
+    if (index > -1) {
+      _data.splice(index, 1);
+    }
+    _refreshTableData(_data, _table);
   }
 
   /**
@@ -306,7 +347,10 @@
         transforms:{
           url:string,
           type:string,
-          params:json,
+          params:json/function(pagiantion),
+          headers:json/function(params),
+          data:function(res),
+          total:function(res),
           requestEnd:function(res)
         }
       }, 数据源配置
@@ -374,6 +418,16 @@
     _table.lightTable.event = {
       refresh: () => {
         _refreshTableData(dataSource, _table);
+      },
+      add: data => {
+        _addNewRecord(data, _table);
+      },
+      edit: data => {
+        _editRecord(data, _table);
+      },
+      remove: elem => {
+        const _id = elem.rowData ? elem.rowData._id : "";
+        _removeRecord(_id, _table);
       }
     };
 
