@@ -185,7 +185,7 @@
         if (objectIsNotEmpty(headers)) {
           setRequestHeader(window.lightDesignXhr, headers);
         }
-        window.lightDesignXhr.send(params);
+        window.lightDesignXhr.send(JSON.stringify(params));
         if (!async) {
           return window.lightDesignXhr;
         }

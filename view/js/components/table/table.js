@@ -359,13 +359,8 @@
     }
    */
   function Table(props) {
-    const {
-      bordered = true,
-      columns = [],
-      dataSource = [],
-      id,
-      pageable = true
-    } = props;
+    const { bordered = true, columns = [], id, pageable = true } = props;
+    let { dataSource = [] } = props;
 
     //生成table主体
     let _table = window.lightDesign.parseHTML(
@@ -428,6 +423,21 @@
       remove: elem => {
         const _id = elem.rowData ? elem.rowData._id : "";
         _removeRecord(_id, _table);
+      },
+      setDataSource: data => {
+        dataSource = data;
+        _refreshTableData(dataSource, _table);
+        if (pageable) {
+          _table
+            .querySelector(".light-table-pagination")
+            .replaceWith(
+              window.lightDesign.parseHTML('<div id="pageable"></div>')
+            );
+          _renderTablePagiantion(pageable, _table);
+          _table
+            .querySelector("ul.light-pagination")
+            .classList.add("light-table-pagination");
+        }
       }
     };
 
