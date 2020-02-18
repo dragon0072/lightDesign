@@ -132,4 +132,12 @@ window.onload = () => {
     title: "提示",
     content: "显示信息"
   });
+
+  // document.querySelector("#app").lightTabs({
+  //   tabs: [
+  //     "test111111111111111111111111111111111111111111111111111111111111",
+  //     "test2"
+  //   ],
+  //   tabPanels: ["123", "123"]
+  // });
 };

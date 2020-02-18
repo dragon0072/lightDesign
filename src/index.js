@@ -5,3 +5,4 @@ require("../view/js/components/modal/modal.js");
 require("../view/js/components/select/select.js");
 require("../view/js/components/pagination/pagination.js");
 require("../view/js/components/table/table.js");
+require("../view/js/components/tabs/tabs.js");

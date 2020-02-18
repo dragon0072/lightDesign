@@ -3,7 +3,10 @@
   function _modalCloseHandle(params, _modal) {
     const { destroyOnClose, afterClose } = params;
     if (destroyOnClose) {
-      _modal.remove();
+      let _id = _modal.id;
+      _modal.replaceWith(
+        window.lightDesign.parseHTML(`<div id="${_id}"></div>`)
+      );
     } else {
       _modal
         .querySelector(".light-modal-mask")
@@ -54,7 +57,8 @@
       elems.querySelector(".btn-cancel").addEventListener("click", event => {
         let closeSuccess = true;
         if (onCancel && typeof onCancel === "function") {
-          closeSuccess = onCancel(_modal) || true;
+          closeSuccess = onCancel(_modal);
+          closeSuccess = closeSuccess === undefined ? true : closeSuccess;
         }
         if (closeSuccess)
           _modalCloseHandle({ destroyOnClose, afterClose }, _modal);
@@ -62,7 +66,8 @@
       elems.querySelector(".btn-Ok").addEventListener("click", event => {
         let okSuccess = true;
         if (onOk && typeof onOk === "function") {
-          okSuccess = onOk(_modal) || true;
+          okSuccess = onOk(_modal);
+          okSuccess = okSuccess === undefined ? true : okSuccess;
         }
         if (okSuccess)
           _modalCloseHandle({ destroyOnClose, afterClose }, _modal);
@@ -157,6 +162,14 @@
       .addEventListener("click", event => {
         _modalCloseHandle({ destroyOnClose, afterClose }, _modal);
       });
+
+    _modal.lightModal = {
+      event: {
+        close: () => {
+          _modalCloseHandle({ destroyOnClose, afterClose }, _modal);
+        }
+      }
+    };
 
     return _modal;
   }

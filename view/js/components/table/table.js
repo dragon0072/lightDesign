@@ -93,15 +93,23 @@
           }
         });
       } else {
-        columnElem = window.lightDesign.parseHTML(
-          `<td class="light-table-row-cell-ellipsis" style="text-align:${align};" title="${data[
-            field
-          ] || ""}">${
-            render && typeof render === "function"
-              ? render(data)
-              : data[field] || ""
-          }</td>`
-        );
+        let tdData = data[field] || "";
+        if (render && typeof render === "function") {
+          tdData = render(data);
+        }
+        if (tdData instanceof HTMLElement) {
+          columnElem = window.lightDesign.parseHTML(
+            `<td class="light-table-row-cell-ellipsis" style="text-align:${align};"
+             title="${data[field] || ""}"></td>`
+          );
+          columnElem.appendChild(tdData);
+        } else {
+          columnElem = window.lightDesign.parseHTML(
+            `<td class="light-table-row-cell-ellipsis" style="text-align:${align};" title="${tdData
+              .toString()
+              .replace(/<\/?.+?\/?>/g, "")}">${tdData}</td>`
+          );
+        }
       }
       rowElem.appendChild(columnElem);
     });
@@ -322,11 +330,16 @@
       _table.lightTable.event.refresh();
       return;
     }
-    let fileterData = _data.filter(item => item._id === _id);
-    let index = _data.indexOf(fileterData);
-    if (index > -1) {
-      _data.splice(index, 1);
-    }
+    _data.forEach((item, index, arr) => {
+      if (item._id === _id) {
+        arr.splice(index, 1);
+      }
+    });
+    // let fileterData = _data.filter(item => item._id === _id);
+    // let index = _data.indexOf(fileterData);
+    // if (index > -1) {
+    //   _data.splice(index, 1);
+    // }
     _refreshTableData(_data, _table);
   }
 
