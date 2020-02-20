@@ -1,4 +1,5 @@
 require("../view/js/global");
+require("../view/js/components/checkbox/checkbox.js");
 require("../view/js/components/upload/upload.js");
 require("../view/js/components/alert/alert.js");
 require("../view/js/components/modal/modal.js");

@@ -126,13 +126,11 @@ window.onload = () => {
   //     }
   //   ]
   // });
-
-  document.querySelector("#app").lightModal({
-    id: "app",
-    title: "提示",
-    content: "显示信息"
-  });
-
+  // document.querySelector("#app").lightModal({
+  //   id: "app",
+  //   title: "提示",
+  //   content: "显示信息"
+  // });
   // document.querySelector("#app").lightTabs({
   //   tabs: [
   //     "test111111111111111111111111111111111111111111111111111111111111",
@@ -140,4 +138,7 @@ window.onload = () => {
   //   ],
   //   tabPanels: ["123", "123"]
   // });
+  document.querySelector("#app").lightCheckbox({
+    label: "ceshi"
+  });
 };
