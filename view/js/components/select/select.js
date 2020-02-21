@@ -92,7 +92,7 @@
           .querySelector(".light-select-selection")
           .getAttribute(
             "aria-controls"
-          )}" style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;z-index:0;"></div>`
+          )}" style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;z-index:1001;"></div>`
       );
       blurDom.addEventListener("click", event => {
         event.stopPropagation();
@@ -227,7 +227,7 @@
           if (onSelect && typeof onSelect === "function") {
             onSelect(_this.selectValue);
           }
-          document.querySelector(`#${_domId}`).remove();
+          document.getElementById(_domId).remove();
         });
       });
 
