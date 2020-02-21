@@ -253,7 +253,7 @@
         window.lightDesign.parseHTML(
           `<th class="light-table-row-cell-ellipsis ${
             width !== "auto" ? "light-table-row-cell-break-word" : ""
-          }" style="text-align:${align}">
+          }" style="text-align:${align}" title="${title || ""}">
             <span class="light-table-header-column">
               <div>
                 <span class="light-table-column-title">${title || ""}</span>
