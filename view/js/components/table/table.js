@@ -55,7 +55,11 @@
     if (!_table.querySelector(".light-table-placeholder")) {
       _table.querySelector(".light-table-content").appendChild(emptyElem);
       if (_table.querySelector("ul.light-table-pagination")) {
-        _table.querySelector("ul.light-table-pagination").remove();
+        _table
+          .querySelector("ul.light-table-pagination")
+          .replaceWith(
+            window.lightDesign.parseHTML(`<div id="pageable"></div>`)
+          );
       }
       _table.querySelectorAll("tbody>tr.light-table-row").forEach(item => {
         item.remove();
@@ -193,7 +197,15 @@
         item.remove();
       });
     }
-    if (_data.length === 0) _renderEmptyDataDom(_table);
+    if (_data.length === 0) {
+      _renderEmptyDataDom(_table);
+      return;
+    } else {
+      if (_table.querySelector(".light-table-placeholder")) {
+        _table.querySelector(".light-table-placeholder").remove();
+        _renderTablePagiantion(true, _table);
+      }
+    }
 
     if (_table.lightTable.pagination && !_isHttp) {
       let { pageIndex, pageSize } = _table.lightTable.pagination;
@@ -290,11 +302,14 @@
           return true;
         }
       });
+      _table
+        .querySelector("ul.light-pagination")
+        .classList.add("light-table-pagination");
     }
   }
 
   //刷新数据源
-  function _refreshTableData(dataSource, _table) {
+  function _refreshTableData(dataSource, pageable, _table) {
     _toggleLoading(_table);
     _getTableDataHandle(dataSource, _table);
     _renderTableBody(_table.lightTable.columns, _table);
@@ -413,9 +428,6 @@
     //生成翻页控件
     if (pageable) {
       _renderTablePagiantion(pageable, _table);
-      _table
-        .querySelector("ul.light-pagination")
-        .classList.add("light-table-pagination");
     }
 
     //生成表体
@@ -425,7 +437,7 @@
 
     _table.lightTable.event = {
       refresh: () => {
-        _refreshTableData(dataSource, _table);
+        _refreshTableData(dataSource, pageable, _table);
       },
       add: data => {
         _addNewRecord(data, _table);
