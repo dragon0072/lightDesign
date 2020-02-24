@@ -21,6 +21,17 @@
         ".light-select-selection-selected-value"
       ).innerText = event.innerText;
     }
+    selectDom
+      .querySelectorAll(".light-select-dropdown-menu-item")
+      .forEach(item => {
+        if (item.selectValue === event.selectValue) {
+          item.classList.add("light-select-dropdown-menu-item-selected");
+          item.setAttribute("aria-selected", "true");
+        } else {
+          item.classList.remove("light-select-dropdown-menu-item-selected");
+          item.setAttribute("aria-selected", "false");
+        }
+      });
     selectDom.selectValue = event.selectValue;
   }
 
