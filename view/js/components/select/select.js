@@ -1,5 +1,29 @@
 (() => {
   "use strict";
+  function _selectHandle(event, selectDom) {
+    if (selectDom.querySelector(".light-select-selection__placeholder")) {
+      selectDom.querySelector(
+        ".light-select-selection__placeholder"
+      ).style.display = "none";
+    }
+    if (!selectDom.querySelector(".light-select-selection-selected-value")) {
+      selectDom
+        .querySelector(".light-select-selection__rendered")
+        .appendChild(
+          window.lightDesign.parseHTML(
+            `<div class="light-select-selection-selected-value" title="${event.innerText}" style="display: block; opacity: 1;">${event.innerText}</div>`
+          )
+        );
+    } else {
+      selectDom.querySelector(".light-select-selection-selected-value").title =
+        event.innerText;
+      selectDom.querySelector(
+        ".light-select-selection-selected-value"
+      ).innerText = event.innerText;
+    }
+    selectDom.selectValue = event.selectValue;
+  }
+
   function _renderSelectItem(id, data, text, value, defaultValue, selectDom) {
     let inputDom = window.lightDesign
       .parseHTML(`<div class="light-select-selection__rendered">
@@ -17,14 +41,14 @@
     data.forEach(item => {
       let liHtml = "<li></li>";
       if (item[value] === defaultValue) {
-        liHtml = `<li role="option" unselectable="on" class="light-select-dropdown-menu-item light-select-dropdown-menu-item-selected" aria-selected="true" style="user-select: none;">${item[text]}</li>`;
+        liHtml = `<li role="option" data-value="${item[value]}" unselectable="on" class="light-select-dropdown-menu-item light-select-dropdown-menu-item-selected" aria-selected="true" style="user-select: none;">${item[text]}</li>`;
         inputDom.querySelector(".light-select-selection-selected-value").title =
           item[text];
         inputDom.querySelector(
           ".light-select-selection-selected-value"
         ).innerText = item[text];
       } else {
-        liHtml = `<li role="option" unselectable="on" class="light-select-dropdown-menu-item" aria-selected="false" style="user-select: none;">${item[text]}</li>`;
+        liHtml = `<li role="option" data-value="${item[value]}" unselectable="on" class="light-select-dropdown-menu-item" aria-selected="false" style="user-select: none;">${item[text]}</li>`;
       }
       let liItem = window.lightDesign.parseHTML(liHtml);
       liItem.selectValue = item[value];
@@ -120,6 +144,7 @@
     }
   }
 
+  //TODO 需要添加空白行
   /**
    * select控件
    * @param {json} props {
@@ -201,30 +226,7 @@
         item.addEventListener("click", event => {
           event.stopPropagation();
           let _this = event.currentTarget;
-          if (selectDom.querySelector(".light-select-selection__placeholder")) {
-            selectDom.querySelector(
-              ".light-select-selection__placeholder"
-            ).style.display = "none";
-          }
-          if (
-            !selectDom.querySelector(".light-select-selection-selected-value")
-          ) {
-            selectDom
-              .querySelector(".light-select-selection__rendered")
-              .appendChild(
-                window.lightDesign.parseHTML(
-                  `<div class="light-select-selection-selected-value" title="${_this.innerText}" style="display: block; opacity: 1;">${_this.innerText}</div>`
-                )
-              );
-          } else {
-            selectDom.querySelector(
-              ".light-select-selection-selected-value"
-            ).title = _this.innerText;
-            selectDom.querySelector(
-              ".light-select-selection-selected-value"
-            ).innerText = _this.innerText;
-          }
-          selectDom.selectValue = _this.selectValue;
+          _selectHandle(_this, selectDom);
           _toggleDropDownList(selectDom);
           if (onSelect && typeof onSelect === "function") {
             onSelect(_this.selectValue);
@@ -232,6 +234,16 @@
           document.getElementById(_domId).remove();
         });
       });
+    selectDom.lightSelect = {
+      event: {
+        selectValue: value => {
+          let _this = selectDom.querySelector(
+            `.light-select-dropdown-menu-item[data-value="${value}"]`
+          );
+          _selectHandle(_this, selectDom);
+        }
+      }
+    };
 
     return selectDom;
   }
