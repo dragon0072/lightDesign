@@ -80,20 +80,26 @@
           `<td class="light-table-row-cell-ellipsis" style="text-align:${align}"><span></span></td>`
         );
         command.forEach((item, index, arr) => {
-          const { name, click } = item;
-          let commandElem = window.lightDesign.parseHTML(`<a>${name}</a>`);
-          commandElem.addEventListener("click", event => {
-            if (click && typeof click === "function") {
-              click(data, event);
+          const { name, click, isVisible } = item;
+          let disable = true;
+          if (isVisible && typeof isVisible === "function") {
+            disable = isVisible(data);
+          }
+          if (disable) {
+            let commandElem = window.lightDesign.parseHTML(`<a>${name}</a>`);
+            commandElem.addEventListener("click", event => {
+              if (click && typeof click === "function") {
+                click(data, event);
+              }
+            });
+            columnElem.appendChild(commandElem);
+            if (index + 1 < arr.length) {
+              columnElem.appendChild(
+                window.lightDesign.parseHTML(
+                  `<div class="light-divider light-divider-vertical" role="separator"></div>`
+                )
+              );
             }
-          });
-          columnElem.appendChild(commandElem);
-          if (index + 1 < arr.length) {
-            columnElem.appendChild(
-              window.lightDesign.parseHTML(
-                `<div class="light-divider light-divider-vertical" role="separator"></div>`
-              )
-            );
           }
         });
       } else {
@@ -453,11 +459,13 @@
         dataSource = data;
         _refreshTableData(dataSource, _table);
         if (pageable) {
-          _table
-            .querySelector(".light-table-pagination")
-            .replaceWith(
-              window.lightDesign.parseHTML('<div id="pageable"></div>')
-            );
+          if (_table.querySelector(".light-table-pagination")) {
+            _table
+              .querySelector(".light-table-pagination")
+              .replaceWith(
+                window.lightDesign.parseHTML('<div id="pageable"></div>')
+              );
+          }
           _renderTablePagiantion(pageable, _table);
           _table
             .querySelector("ul.light-pagination")
