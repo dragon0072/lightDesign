@@ -24,6 +24,7 @@
 
   //生成成功提示
   function _renderAlert(
+    id,
     type,
     message,
     description,
@@ -32,7 +33,7 @@
     showIcon
   ) {
     let dom = window.lightDesign.parseHTML(
-      `<div data-show="true" class="light-alert light-alert-${type} light-alert-no-icon"><span class="light-alert-message"></span><span class="light-alert-description"></span></div>`
+      `<div id=${id} data-show="true" class="light-alert light-alert-${type} light-alert-no-icon"><span class="light-alert-message"></span><span class="light-alert-description"></span></div>`
     );
 
     if (!message.isNullOrEmpty()) {
@@ -101,6 +102,7 @@
    */
   function Alert(props) {
     const {
+      id,
       banner = false,
       closable = false,
       description = "",
@@ -110,6 +112,7 @@
     } = props;
 
     let alertDom = _renderAlert(
+      id,
       type,
       message,
       description,
@@ -119,12 +122,17 @@
     );
 
     alertDom.lightAlert.modifyMessage = (message, description) => {
-      _modifyMessage(message, description);
+      _modifyMessage(message, description, alertDom);
     };
     return alertDom;
   }
 
   HTMLElement.prototype.lightAlert = function(props) {
+    //如果没有设置id，则使用当前dom的id，或者guid
+    if (!props.id) {
+      props.id = this.id || window.lightDesign.guid();
+    }
+
     this.replaceWith(Alert(props));
   };
 })();

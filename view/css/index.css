@@ -27632,45 +27632,177 @@ li.light-select-tree-treenode-disabled>.light-select-tree-node-content-wrapper:h
 }
 
 .light-tree {
-    /* see https://github.com/light-design/light-design/issues/16259 */
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
     color: rgba(0, 0, 0, 0.65);
     font-size: 14px;
     font-variant: tabular-nums;
-    line-height: 1.5;
+    line-height: 1.5715;
     list-style: none;
     -webkit-font-feature-settings: 'tnum';
     font-feature-settings: 'tnum';
-    margin: 0;
-    padding: 0;
+    background: #fff;
+    border-radius: 2px;
+    -webkit-transition: background-color 0.3s;
+    transition: background-color 0.3s;
 }
 
-.light-tree-checkbox-checked::after {
-    position: absolute;
-    top: 16.67%;
-    left: 0;
-    width: 100%;
-    height: 66.67%;
+.light-tree-rtl {
+    direction: rtl;
 }
 
-.light-tree ol,
-.light-tree ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
+.light-tree-focused:not(:hover):not(.light-tree-active-focused) {
+    background: #e6f7ff;
 }
 
-.light-tree li {
-    margin: 0;
-    padding: 4px 0;
+.light-tree-list-holder-inner {
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+}
+
+.light-tree.light-tree-block-node .light-tree-list-holder-inner {
+    -webkit-box-align: stretch;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+}
+
+.light-tree.light-tree-block-node .light-tree-list-holder-inner .light-tree-node-content-wrapper {
+    -webkit-box-flex: 1;
+    -ms-flex: auto;
+    flex: auto;
+}
+
+.light-tree .light-tree-treenode {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+    padding: 0 0 4px 0;
+    outline: none;
+}
+
+.light-tree .light-tree-treenode-rtl {
+    direction: rtl;
+}
+
+.light-tree .light-tree-treenode-disabled .light-tree-node-content-wrapper {
+    color: rgba(0, 0, 0, 0.25);
+    cursor: not-allowed;
+}
+
+.light-tree .light-tree-treenode-disabled .light-tree-node-content-wrapper:hover {
+    background: transparent;
+}
+
+.light-tree .light-tree-treenode-active .light-tree-node-content-wrapper {
+    background: #f5f5f5;
+}
+
+.light-tree-indent {
+    -ms-flex-item-align: stretch;
+    align-self: stretch;
     white-space: nowrap;
-    list-style: none;
-    outline: 0;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
-.light-tree li span[draggable],
-.light-tree li span[draggable='true'] {
+.light-tree-indent-unit {
+    display: inline-block;
+    width: 24px;
+}
+
+.light-tree .light-tree-switcher {
+    -webkit-box-flex: 0;
+    -ms-flex: none;
+    flex: none;
+    width: 24px;
+    height: 24px;
+    margin: 0;
+    line-height: 24px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.light-tree .light-tree-switcher .light-tree-switcher-icon,
+.light-tree .light-tree-switcher .light-select-tree-switcher-icon {
+    font-size: 10px;
+    display: inline-block;
+    font-weight: bold;
+}
+
+.light-tree .light-tree-switcher .light-tree-switcher-icon svg,
+.light-tree .light-tree-switcher .light-select-tree-switcher-icon svg {
+    -webkit-transition: -webkit-transform 0.3s;
+    transition: -webkit-transform 0.3s;
+    transition: transform 0.3s;
+    transition: transform 0.3s, -webkit-transform 0.3s;
+}
+
+.light-tree .light-tree-switcher-noop {
+    cursor: default;
+}
+
+.light-tree .light-tree-switcher_close .light-tree-switcher-icon svg {
+    -webkit-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+}
+
+.light-tree-rtl.light-tree .light-tree-switcher_close .light-tree-switcher-icon svg {
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
+.light-tree .light-tree-checkbox {
+    top: initial;
+    margin: 4px 8px 0 0;
+}
+
+.light-tree .light-tree-node-content-wrapper {
+    min-height: 24px;
+    margin: 0;
+    padding: 0 4px;
+    color: inherit;
+    line-height: 24px;
+    background: transparent;
+    border-radius: 2px;
+    cursor: pointer;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+.light-tree .light-tree-node-content-wrapper:hover {
+    background-color: #f5f5f5;
+}
+
+.light-tree .light-tree-node-content-wrapper.light-tree-node-selected {
+    background-color: #bae7ff;
+}
+
+.light-tree .light-tree-node-content-wrapper .light-tree-iconEle {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    vertical-align: top;
+}
+
+.light-tree .light-tree-node-content-wrapper .light-tree-iconEle:empty {
+    display: none;
+}
+
+.light-tree .light-tree-treenode-loading .light-tree-iconEle {
+    display: none;
+}
+
+.light-tree-node-content-wrapper[draggable='true'] {
     line-height: 20px;
     border-top: 2px transparent solid;
     border-bottom: 2px transparent solid;
@@ -27678,291 +27810,54 @@ li.light-select-tree-treenode-disabled>.light-select-tree-node-content-wrapper:h
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    /* Required to make elements draggable in old WebKit */
-    -khtml-user-drag: element;
-    -webkit-user-drag: element;
 }
 
-.light-tree li.drag-over>span[draggable] {
+.light-tree .light-tree-treenode.drag-over>[draggable] {
     color: white;
     background-color: #1890ff;
     opacity: 0.8;
 }
 
-.light-tree li.drag-over-gap-top>span[draggable] {
+.light-tree .light-tree-treenode.drag-over-gap-top>[draggable] {
     border-top-color: #1890ff;
 }
 
-.light-tree li.drag-over-gap-bottom>span[draggable] {
+.light-tree .light-tree-treenode.drag-over-gap-bottom>[draggable] {
     border-bottom-color: #1890ff;
 }
 
-.light-tree li.filter-node>span {
-    color: #f5222d !important;
-    font-weight: 500 !important;
-}
-
-.light-tree li.light-tree-treenode-loading span.light-tree-switcher.light-tree-switcher_open .light-tree-switcher-loading-icon,
-.light-tree li.light-tree-treenode-loading span.light-tree-switcher.light-tree-switcher_close .light-tree-switcher-loading-icon {
-    position: absolute;
-    left: 0;
-    display: inline-block;
-    width: 24px;
-    height: 24px;
-    color: #1890ff;
-    font-size: 14px;
-    -webkit-transform: none;
-    -ms-transform: none;
-    transform: none;
-}
-
-.light-tree li.light-tree-treenode-loading span.light-tree-switcher.light-tree-switcher_open .light-tree-switcher-loading-icon svg,
-.light-tree li.light-tree-treenode-loading span.light-tree-switcher.light-tree-switcher_close .light-tree-switcher-loading-icon svg {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    margin: auto;
-}
-
-:root .light-tree li.light-tree-treenode-loading span.light-tree-switcher.light-tree-switcher_open::after,
-:root .light-tree li.light-tree-treenode-loading span.light-tree-switcher.light-tree-switcher_close::after {
-    opacity: 0;
-}
-
-.light-tree li ul {
-    margin: 0;
-    padding: 0 0 0 18px;
-}
-
-.light-tree li .light-tree-node-content-wrapper {
-    display: inline-block;
-    height: 24px;
-    margin: 0;
-    padding: 0 5px;
-    color: rgba(0, 0, 0, 0.65);
-    line-height: 24px;
-    text-decoration: none;
-    vertical-align: top;
-    border-radius: 2px;
-    cursor: pointer;
-    -webkit-transition: all 0.3s;
-    transition: all 0.3s;
-}
-
-.light-tree li .light-tree-node-content-wrapper:hover {
-    background-color: #e6f7ff;
-}
-
-.light-tree li .light-tree-node-content-wrapper.light-tree-node-selected {
-    background-color: #bae7ff;
-}
-
-.light-tree li span.light-tree-checkbox {
-    top: initial;
-    height: 24px;
-    margin: 0 4px 0 2px;
-    padding: 4px 0;
-}
-
-.light-tree li span.light-tree-switcher,
-.light-tree li span.light-tree-iconEle {
-    display: inline-block;
-    width: 24px;
-    height: 24px;
-    margin: 0;
-    line-height: 24px;
-    text-align: center;
-    vertical-align: top;
-    border: 0 none;
-    outline: none;
-    cursor: pointer;
-}
-
-.light-tree li span.light-tree-iconEle:empty {
-    display: none;
-}
-
-.light-tree li span.light-tree-switcher {
+.light-tree-show-line .light-tree-indent-unit {
     position: relative;
-}
-
-.light-tree li span.light-tree-switcher.light-tree-switcher-noop {
-    cursor: default;
-}
-
-.light-tree li span.light-tree-switcher.light-tree-switcher_open .light-tree-switcher-icon,
-.light-tree li span.light-tree-switcher.light-tree-switcher_open .light-select-switcher-icon {
-    font-size: 12px;
-    font-size: 10px \9;
-    -webkit-transform: scale(0.83333333) rotate(0deg);
-    -ms-transform: scale(0.83333333) rotate(0deg);
-    transform: scale(0.83333333) rotate(0deg);
-    display: inline-block;
-    font-weight: bold;
-}
-
-:root .light-tree li span.light-tree-switcher.light-tree-switcher_open .light-tree-switcher-icon,
-:root .light-tree li span.light-tree-switcher.light-tree-switcher_open .light-select-switcher-icon {
-    font-size: 12px;
-}
-
-.light-tree li span.light-tree-switcher.light-tree-switcher_open .light-tree-switcher-icon svg,
-.light-tree li span.light-tree-switcher.light-tree-switcher_open .light-select-switcher-icon svg {
-    -webkit-transition: -webkit-transform 0.3s;
-    transition: -webkit-transform 0.3s;
-    transition: transform 0.3s;
-    transition: transform 0.3s, -webkit-transform 0.3s;
-}
-
-.light-tree li span.light-tree-switcher.light-tree-switcher_close .light-tree-switcher-icon,
-.light-tree li span.light-tree-switcher.light-tree-switcher_close .light-select-switcher-icon {
-    font-size: 12px;
-    font-size: 10px \9;
-    -webkit-transform: scale(0.83333333) rotate(0deg);
-    -ms-transform: scale(0.83333333) rotate(0deg);
-    transform: scale(0.83333333) rotate(0deg);
-    display: inline-block;
-    font-weight: bold;
-}
-
-:root .light-tree li span.light-tree-switcher.light-tree-switcher_close .light-tree-switcher-icon,
-:root .light-tree li span.light-tree-switcher.light-tree-switcher_close .light-select-switcher-icon {
-    font-size: 12px;
-}
-
-.light-tree li span.light-tree-switcher.light-tree-switcher_close .light-tree-switcher-icon svg,
-.light-tree li span.light-tree-switcher.light-tree-switcher_close .light-select-switcher-icon svg {
-    -webkit-transition: -webkit-transform 0.3s;
-    transition: -webkit-transform 0.3s;
-    transition: transform 0.3s;
-    transition: transform 0.3s, -webkit-transform 0.3s;
-}
-
-.light-tree li span.light-tree-switcher.light-tree-switcher_close .light-tree-switcher-icon svg {
-    -webkit-transform: rotate(-90deg);
-    -ms-transform: rotate(-90deg);
-    transform: rotate(-90deg);
-}
-
-.light-tree li:last-child>span.light-tree-switcher::before,
-.light-tree li:last-child>span.light-tree-iconEle::before {
-    display: none;
-}
-
-.light-tree>li:first-child {
-    padding-top: 7px;
-}
-
-.light-tree>li:last-child {
-    padding-bottom: 7px;
-}
-
-.light-tree-child-tree>li:first-child {
-    padding-top: 8px;
-}
-
-.light-tree-child-tree>li:last-child {
-    padding-bottom: 0;
-}
-
-li.light-tree-treenode-disabled>span:not(.light-tree-switcher),
-li.light-tree-treenode-disabled>.light-tree-node-content-wrapper,
-li.light-tree-treenode-disabled>.light-tree-node-content-wrapper span {
-    color: rgba(0, 0, 0, 0.25);
-    cursor: not-allowed;
-}
-
-li.light-tree-treenode-disabled>.light-tree-node-content-wrapper:hover {
-    background: transparent;
-}
-
-.light-tree-icon__open {
-    margin-right: 2px;
-    vertical-align: top;
-}
-
-.light-tree-icon__close {
-    margin-right: 2px;
-    vertical-align: top;
-}
-
-.light-tree.light-tree-show-line li {
-    position: relative;
-}
-
-.light-tree.light-tree-show-line li span.light-tree-switcher {
-    color: rgba(0, 0, 0, 0.45);
-    background: #fff;
-}
-
-.light-tree.light-tree-show-line li span.light-tree-switcher.light-tree-switcher-noop .light-tree-switcher-icon,
-.light-tree.light-tree-show-line li span.light-tree-switcher.light-tree-switcher-noop .light-select-switcher-icon {
-    display: inline-block;
-    font-weight: normal;
-    font-size: 12px;
-}
-
-.light-tree.light-tree-show-line li span.light-tree-switcher.light-tree-switcher-noop .light-tree-switcher-icon svg,
-.light-tree.light-tree-show-line li span.light-tree-switcher.light-tree-switcher-noop .light-select-switcher-icon svg {
-    -webkit-transition: -webkit-transform 0.3s;
-    transition: -webkit-transform 0.3s;
-    transition: transform 0.3s;
-    transition: transform 0.3s, -webkit-transform 0.3s;
-}
-
-.light-tree.light-tree-show-line li span.light-tree-switcher.light-tree-switcher_open .light-tree-switcher-icon,
-.light-tree.light-tree-show-line li span.light-tree-switcher.light-tree-switcher_open .light-select-switcher-icon {
-    display: inline-block;
-    font-weight: normal;
-    font-size: 12px;
-}
-
-.light-tree.light-tree-show-line li span.light-tree-switcher.light-tree-switcher_open .light-tree-switcher-icon svg,
-.light-tree.light-tree-show-line li span.light-tree-switcher.light-tree-switcher_open .light-select-switcher-icon svg {
-    -webkit-transition: -webkit-transform 0.3s;
-    transition: -webkit-transform 0.3s;
-    transition: transform 0.3s;
-    transition: transform 0.3s, -webkit-transform 0.3s;
-}
-
-.light-tree.light-tree-show-line li span.light-tree-switcher.light-tree-switcher_close .light-tree-switcher-icon,
-.light-tree.light-tree-show-line li span.light-tree-switcher.light-tree-switcher_close .light-select-switcher-icon {
-    display: inline-block;
-    font-weight: normal;
-    font-size: 12px;
-}
-
-.light-tree.light-tree-show-line li span.light-tree-switcher.light-tree-switcher_close .light-tree-switcher-icon svg,
-.light-tree.light-tree-show-line li span.light-tree-switcher.light-tree-switcher_close .light-select-switcher-icon svg {
-    -webkit-transition: -webkit-transform 0.3s;
-    transition: -webkit-transform 0.3s;
-    transition: transform 0.3s;
-    transition: transform 0.3s, -webkit-transform 0.3s;
-}
-
-.light-tree.light-tree-show-line li:not(:last-child)::before {
-    position: absolute;
-    left: 12px;
-    width: 1px;
     height: 100%;
-    height: calc(100% - 22px);
-    margin: 22px 0 0;
-    border-left: 1px solid #d9d9d9;
-    content: ' ';
 }
 
-.light-tree.light-tree-icon-hide .light-tree-treenode-loading .light-tree-iconEle {
+.light-tree-show-line .light-tree-indent-unit::before {
+    position: absolute;
+    top: calc(100% - 4px);
+    right: -12px;
+    bottom: -28px;
+    border-right: 1px solid #d9d9d9;
+    content: '';
+}
+
+.light-tree-rtl.light-tree-show-line .light-tree-indent-unit::before {
+    right: auto;
+    left: -12px;
+    border-right: none;
+    border-left: 1px solid #d9d9d9;
+}
+
+.light-tree-show-line .light-tree-indent-unit-end::before {
     display: none;
 }
 
-.light-tree.light-tree-block-node li .light-tree-node-content-wrapper {
-    width: calc(100% - 24px);
+.light-tree-show-line .light-tree-treenode-motion:not(.light-motion-collapse-leave):not(.light-motion-collapse-appear-active) .light-tree-indent-unit::before {
+    display: none;
 }
 
-.light-tree.light-tree-block-node li span.light-tree-checkbox+.light-tree-node-content-wrapper {
-    width: calc(100% - 46px);
+.light-tree-show-line .light-tree-switcher {
+    z-index: 1;
+    background: #fff;
 }
 
 /* stylelint-disable at-rule-empty-line-before,at-rule-name-space-after,at-rule-no-unknown */

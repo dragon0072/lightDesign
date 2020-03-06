@@ -35,12 +35,28 @@
     selectDom.selectValue = event.selectValue;
   }
 
-  function _renderSelectItem(id, data, text, value, defaultValue, selectDom) {
+  function _renderSelectItem(
+    id,
+    data,
+    text,
+    value,
+    defaultValue,
+    selectDom,
+    allowClear,
+    placeholder,
+    onSelect
+  ) {
+    if (selectDom.querySelector(".light-select-selection__rendered")) {
+      selectDom.querySelector(".light-select-selection__rendered").remove();
+    }
     let inputDom = window.lightDesign
       .parseHTML(`<div class="light-select-selection__rendered">
                     <div class="light-select-selection-selected-value" title="" style="display: block; opacity: 1;"></div>
                   </div>`);
     //<div id="${id}" style="overflow: auto; transform: translateZ(0px);">
+    if (selectDom.querySelector(".light-select-dropdown")) {
+      selectDom.querySelector(".light-select-dropdown").remove();
+    }
     let optionsDom = window.lightDesign.parseHTML(
       `<div class="light-select-dropdown light-select-dropdown--single light-select-dropdown-placement-bottomLeft light-select-dropdown-hidden" style="width: 100%; left: 0; top: 35px;">
         <div style="overflow: auto; transform: translateZ(0px);">
@@ -71,6 +87,31 @@
       .insertBefore(inputDom, selectDom.querySelector(".light-select-arrow"));
     selectDom.appendChild(optionsDom);
     selectDom.selectValue = defaultValue || "";
+
+    // TODO allowClear待修复
+    if (allowClear) {
+      selectDom.classList.add("light-select-allow-clear");
+      _allowClear(selectDom);
+    }
+
+    if (typeof placeholder === "string" && placeholder.replaceSpace() !== "") {
+      _placeholder(selectDom, placeholder);
+    }
+
+    selectDom
+      .querySelectorAll("li.light-select-dropdown-menu-item")
+      .forEach(item => {
+        item.addEventListener("click", event => {
+          event.stopPropagation();
+          let _this = event.currentTarget;
+          _selectHandle(_this, selectDom);
+          _toggleDropDownList(selectDom);
+          if (onSelect && typeof onSelect === "function") {
+            onSelect(_this.selectValue);
+          }
+          document.getElementById(id).remove();
+        });
+      });
   }
 
   function _allowClear(dom) {
@@ -213,38 +254,17 @@
       textFiledName,
       valueFiledName,
       value,
-      selectDom
+      selectDom,
+      allowClear,
+      placeholder,
+      onSelect
     );
-
-    // TODO allowClear待修复
-    if (allowClear) {
-      selectDom.classList.add("light-select-allow-clear");
-      _allowClear(selectDom);
-    }
-
-    if (typeof placeholder === "string" && placeholder.replaceSpace() !== "") {
-      _placeholder(selectDom, placeholder);
-    }
 
     selectDom.addEventListener("click", event => {
       let _this = event.currentTarget;
       _toggleDropDownList(_this);
     });
 
-    selectDom
-      .querySelectorAll("li.light-select-dropdown-menu-item")
-      .forEach(item => {
-        item.addEventListener("click", event => {
-          event.stopPropagation();
-          let _this = event.currentTarget;
-          _selectHandle(_this, selectDom);
-          _toggleDropDownList(selectDom);
-          if (onSelect && typeof onSelect === "function") {
-            onSelect(_this.selectValue);
-          }
-          document.getElementById(_domId).remove();
-        });
-      });
     selectDom.lightSelect = {
       event: {
         selectValue: value => {
@@ -252,6 +272,19 @@
             `.light-select-dropdown-menu-item[data-value="${value}"]`
           );
           _selectHandle(_this, selectDom);
+        },
+        setDataSource: data => {
+          _renderSelectItem(
+            _domId,
+            data,
+            textFiledName,
+            valueFiledName,
+            value,
+            selectDom,
+            allowClear,
+            placeholder,
+            onSelect
+          );
         }
       }
     };

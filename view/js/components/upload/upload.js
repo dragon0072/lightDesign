@@ -33,7 +33,7 @@
     let fileDom = window.lightDesign.parseHTML(
       `<div class="">
         <span>
-          <div class="light-upload-list-item light-upload-list-item-error light-upload-list-item-list-type-text">
+          <div class="light-upload-list-item light-upload-list-item-done light-upload-list-item-list-type-text">
             <div class="light-upload-list-item-info">
               <span>
                 <i aria-label="图标: paper-clip" class="anticon anticon-paper-clip">
@@ -49,6 +49,7 @@
                         <path d="M505.7 661a8 8 0 0 0 12.6 0l112-141.7c4.1-5.2.4-12.9-6.3-12.9h-74.1V168c0-4.4-3.6-8-8-8h-60c-4.4 0-8 3.6-8 8v338.3H400c-6.7 0-10.4 7.7-6.3 12.9l112 141.8zM878 626h-60c-4.4 0-8 3.6-8 8v154H214V634c0-4.4-3.6-8-8-8h-60c-4.4 0-8 3.6-8 8v198c0 17.7 14.3 32 32 32h684c17.7 0 32-14.3 32-32V634c0-4.4-3.6-8-8-8z"></path>
                       </svg>
                     </i>
+                    下载文件
                   </a>
                   <a aria-id="delete" title="删除文件">
                     <i aria-label="图标: delete" title="删除文件" tabindex="-1" class="anticon anticon-delete">
@@ -56,6 +57,7 @@
                         <path d="M360 184h-8c4.4 0 8-3.6 8-8v8h304v-8c0 4.4 3.6 8 8 8h-8v72h72v-80c0-35.3-28.7-64-64-64H352c-35.3 0-64 28.7-64 64v80h72v-72zm504 72H160c-17.7 0-32 14.3-32 32v32c0 4.4 3.6 8 8 8h60.4l24.7 523c1.6 34.1 29.8 61 63.9 61h454c34.2 0 62.3-26.8 63.9-61l24.7-523H888c4.4 0 8-3.6 8-8v-32c0-17.7-14.3-32-32-32zM731.3 840H292.7l-24.2-512h487l-24.2 512z"></path>
                       </svg>
                     </i>
+                    删除文件
                   </a>
                 </span>
               </span>
@@ -87,7 +89,7 @@
         }
       });
 
-    uploadDom.querySelector(".upload-list").appendChild(fileDom);
+    uploadDom.querySelector(".light-upload-list").appendChild(fileDom);
   }
 
   function _deleteFileHandle(event, uploadDom, fileDom, file, onRemove) {
@@ -129,12 +131,23 @@
           uploadDom.uploadFiles.push(item);
           _uploadSuccess(uploadDom, item, onDownload, onRemove);
         }
+      } else {
+        let id = window.lightDesign.guid();
+        document.body.appendChild(
+          window.lightDesign.parseHTML(`<div id="${id}"></div>`)
+        );
+        document.getElementById(`${id}`).lightModal({
+          title: "提示",
+          content: "请勿重复上传相同文件！"
+        });
       }
     });
+    _this.value = "";
   }
 
   function _setDefaultFileList(fileList, uploadDom, onDownload, onRemove) {
     fileList.forEach(file => {
+      uploadDom.uploadFilesName[file.name] = true;
       _uploadSuccess(uploadDom, file, onDownload, onRemove);
     });
   }

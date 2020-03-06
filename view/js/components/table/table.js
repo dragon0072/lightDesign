@@ -1,8 +1,4 @@
 (() => {
-  let _data = [],
-    _total = 0,
-    _isHttp = false;
-
   //切换loading状态
   function _toggleLoading(_table) {
     if (_table.querySelector(".light-table-spin-holder")) {
@@ -105,14 +101,21 @@
       } else {
         let tdData = data[field] || "";
         if (render && typeof render === "function") {
-          tdData = render(data);
+          tdData = render(data, rowKey);
         }
-        if (tdData instanceof HTMLElement) {
-          columnElem = window.lightDesign.parseHTML(
-            `<td class="light-table-row-cell-ellipsis" style="text-align:${align};"
+        if (tdData instanceof HTMLElement || tdData instanceof Text) {
+          if (tdData.nodeName.toLowerCase() === "td") {
+            columnElem = tdData;
+            columnElem.classList.add("light-table-row-cell-ellipsis");
+            columnElem.title = data[field] || "";
+            columnElem.style.textAlign = align;
+          } else {
+            columnElem = window.lightDesign.parseHTML(
+              `<td class="light-table-row-cell-ellipsis" style="text-align:${align};"
              title="${data[field] || ""}"></td>`
-          );
-          columnElem.appendChild(tdData);
+            );
+            columnElem.appendChild(tdData);
+          }
         } else {
           columnElem = window.lightDesign.parseHTML(
             `<td class="light-table-row-cell-ellipsis" style="text-align:${align};" title="${tdData
@@ -129,9 +132,9 @@
 
   function _getTableDataHandle(dataSource, _table) {
     if (!dataSource.transforms) {
-      _data = dataSource;
-      _total = dataSource.length;
-      _isHttp = false;
+      _table.lightTable.data.dataSource = dataSource;
+      _table.lightTable.data.total = dataSource.length;
+      _table.lightTable.data.isHttp = false;
     } else {
       const {
         url,
@@ -168,20 +171,24 @@
         }
 
         if (data && typeof data === "function") {
-          _data = data(res) || [];
+          _table.lightTable.data.dataSource = data(res) || [];
         }
 
         if (total && typeof total === "function") {
-          _total = total(res) || 0;
+          _table.lightTable.data.total = total(res) || 0;
         }
 
-        if (_data.length > 0 && _total === 0) {
-          _total = _data.length;
+        if (
+          _table.lightTable.data.dataSource.length > 0 &&
+          _table.lightTable.data.total === 0
+        ) {
+          _table.lightTable.data.total =
+            _table.lightTable.data.dataSource.length;
         }
-        _isHttp = true;
+        _table.lightTable.data.isHttp = true;
       }
     }
-    _data.forEach(item => {
+    _table.lightTable.data.dataSource.forEach(item => {
       item._id = window.lightDesign.guid();
     });
   }
@@ -192,7 +199,7 @@
    * @param {[json]]} columns
    * @param {HTMLDocument} _table
    */
-  function _renderTableBody(columns, _table) {
+  function _renderTableBody(columns, pageable, _table) {
     if (columns.length < 1) return;
 
     if (
@@ -203,20 +210,20 @@
         item.remove();
       });
     }
-    if (_data.length === 0) {
+    if (_table.lightTable.data.dataSource.length === 0) {
       _renderEmptyDataDom(_table);
       return;
     } else {
       if (_table.querySelector(".light-table-placeholder")) {
         _table.querySelector(".light-table-placeholder").remove();
-        _renderTablePagiantion(true, _table);
+        _renderTablePagiantion(pageable, _table);
       }
     }
 
-    if (_table.lightTable.pagination && !_isHttp) {
+    if (_table.lightTable.pagination && !_table.lightTable.data.isHttp) {
       let { pageIndex, pageSize } = _table.lightTable.pagination;
 
-      _data.forEach((data, index) => {
+      _table.lightTable.data.dataSource.forEach((data, index) => {
         if (
           index >= pageIndex * pageSize - pageSize &&
           index < pageIndex * pageSize
@@ -227,7 +234,7 @@
         }
       });
     } else {
-      _data.forEach((data, index) => {
+      _table.lightTable.data.dataSource.forEach((data, index) => {
         _table
           .querySelector("tbody")
           .appendChild(_renderBodyRow(data, columns, index));
@@ -293,14 +300,17 @@
    * @param {Boolean/JSON} pageable
    */
   function _renderTablePagiantion(pageable, _table) {
-    //如果pageable为true时，使用默认配置，生成分页控件
+    if (_table.querySelector("ul.light-pagination.light-table-pagination")) {
+      return;
+    }
     if (pageable && typeof pageable === "boolean") {
+      //如果pageable为true时，使用默认配置，生成分页控件
       _table.lightTable.pagination = {
         pageSize: 10,
         pageIndex: 1
       };
       _table.querySelector("#pageable").lightPagination({
-        total: _total,
+        total: _table.lightTable.data.total,
         onChange: (current, pageSize) => {
           _table.lightTable.pagination.pageIndex = current;
           _table.lightTable.pagination.pageSize = pageSize;
@@ -318,50 +328,52 @@
   function _refreshTableData(dataSource, pageable, _table) {
     _toggleLoading(_table);
     _getTableDataHandle(dataSource, _table);
-    _renderTableBody(_table.lightTable.columns, _table);
+    _renderTableBody(_table.lightTable.columns, pageable, _table);
     _toggleLoading(_table);
   }
 
   //新增行
-  function _addNewRecord(data, _table) {
-    if (_isHttp) {
+  function _addNewRecord(data, pageable, _table) {
+    if (_table.lightTable.data.isHttp) {
       _table.lightTable.event.refresh();
       return;
     }
     data._id = window.lightDesign.guid();
-    _data.splice(0, 0, data);
-    _refreshTableData(_data, _table);
+    _table.lightTable.data.dataSource.splice(0, 0, data);
+    _refreshTableData(_table.lightTable.data.dataSource, pageable, _table);
   }
 
   //编辑行
-  function _editRecord(data, _table) {
-    if (_isHttp) {
+  function _editRecord(data, pageable, _table) {
+    if (_table.lightTable.data.isHttp) {
       _table.lightTable.event.refresh();
       return;
     }
-    let fileterData = _data.filter(item => item._id === data._id);
-    let index = _data.indexOf(fileterData);
-    _data.splice(index, 1, data);
-    _refreshTableData(_data, _table);
+    let fileterData = _table.lightTable.data.dataSource.filter(
+      item => item._id === data._id
+    );
+    let index = _table.lightTable.data.dataSource.indexOf(fileterData);
+    _table.lightTable.data.dataSource.splice(index, 1, data);
+    _refreshTableData(_table.lightTable.data.dataSource, pageable, _table);
   }
 
   //删除行
-  function _removeRecord(_id, _table) {
-    if (_isHttp) {
+  function _removeRecord(_id, pageable, _table) {
+    if (_table.lightTable.data.isHttp) {
       _table.lightTable.event.refresh();
       return;
     }
-    _data.forEach((item, index, arr) => {
+    _table.lightTable.data.dataSource.forEach((item, index, arr) => {
       if (item._id === _id) {
         arr.splice(index, 1);
       }
     });
-    // let fileterData = _data.filter(item => item._id === _id);
-    // let index = _data.indexOf(fileterData);
+    // let fileterData =  _table.lightTable.data.dataSource.filter(item => item._id === _id);
+    // let index =  _table.lightTable.data.dataSource.indexOf(fileterData);
     // if (index > -1) {
-    //   _data.splice(index, 1);
+    //    _table.lightTable.data.dataSource.splice(index, 1);
     // }
-    _refreshTableData(_data, _table);
+    _refreshTableData(_table.lightTable.data.dataSource, pageable, _table);
   }
 
   /**
@@ -420,7 +432,13 @@
       </div>`
     );
 
-    _table.lightTable = {};
+    _table.lightTable = {
+      data: {
+        dataSource: [],
+        total: 0,
+        isHttp: false
+      }
+    };
 
     if (id && !id.isNullOrEmpty()) {
       _table.id = id;
@@ -437,7 +455,7 @@
     }
 
     //生成表体
-    _renderTableBody(columns, _table);
+    _renderTableBody(columns, pageable, _table);
 
     _table.lightTable.columns = columns;
 
@@ -446,18 +464,18 @@
         _refreshTableData(dataSource, pageable, _table);
       },
       add: data => {
-        _addNewRecord(data, _table);
+        _addNewRecord(data, pageable, _table);
       },
       edit: data => {
-        _editRecord(data, _table);
+        _editRecord(data, pageable, _table);
       },
       remove: elem => {
         const _id = elem.rowData ? elem.rowData._id : "";
-        _removeRecord(_id, _table);
+        _removeRecord(_id, pageable, _table);
       },
       setDataSource: data => {
         dataSource = data;
-        _refreshTableData(dataSource, _table);
+        _refreshTableData(dataSource, pageable, _table);
         if (pageable) {
           if (_table.querySelector(".light-table-pagination")) {
             _table
