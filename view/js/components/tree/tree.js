@@ -77,7 +77,7 @@
             parentTreeNode.treeCheckedChild -= 1;
           prevCheckboxHandle({
             element: parentTreeNode.querySelector(".light-tree-checkbox"),
-            checked: "indeterminate",
+            checked: "inchecked",
             childFieldName,
             valueFieldName
           });
@@ -137,6 +137,7 @@
             `div[data-value="${treeNode.getAttribute("data-parentvalue")}"]`
           );
           if (parentTreeNode) {
+            parentTreeNode.treeCheckedChild += 1;
             prevCheckboxHandle({
               element: parentTreeNode.querySelector(".light-tree-checkbox"),
               checked: "indeterminate",
@@ -157,6 +158,7 @@
       childFieldName,
       valueFieldName
     } = params;
+    let tree = element.closest("div.light-tree");
     let treeList = element.closest("div.light-tree-list-holder-inner");
     let treeNode = element.closest("div.light-tree-treenode");
     element.classList.remove("light-tree-checkbox-indeterminate");
@@ -164,6 +166,14 @@
     if (checked === "checked") {
       element.classList.add("light-tree-checkbox-checked");
       treeNode.classList.add("light-tree-treenode-checkbox-checked");
+      let checkedKeys = tree.querySelector('div[role="tree"] input')
+        .checkedKeys;
+      if (checkedKeys instanceof Array) {
+        checkedKeys.push(treeNode.treeNodeData);
+      } else {
+        checkedKeys = [treeNode.treeNodeData];
+      }
+      tree.querySelector('div[role="tree"] input').checkedKeys = checkedKeys;
       //如果存在子集，则向下轮询
       let childData = treeNode.treeNodeData[childFieldName];
       childData.forEach(item => {
@@ -184,6 +194,18 @@
       element.classList.remove("light-tree-checkbox-checked");
       treeNode.classList.remove("light-tree-treenode-checkbox-checked");
       treeNode.treeCheckedChild = 0;
+      let checkedKeys = tree.querySelector('div[role="tree"] input')
+        .checkedKeys;
+      if (checkedKeys instanceof Array) {
+        checkedKeys.forEach((item, index) => {
+          if (item[valueFieldName] === treeNode.treeNodeData[valueFieldName]) {
+            checkedKeys.splice(index, 1);
+          }
+        });
+      } else {
+        checkedKeys = [];
+      }
+      tree.querySelector('div[role="tree"] input').checkedKeys = checkedKeys;
       //如果存在子集，则向下轮询
       let childData = treeNode.treeNodeData[childFieldName];
       childData.forEach(item => {
@@ -211,28 +233,36 @@
       childFieldName,
       valueFieldName
     } = params;
+    let tree = element.closest("div.light-tree");
     let treeList = element.closest("div.light-tree-list-holder-inner");
     let treeNode = element.closest("div.light-tree-treenode");
     element.classList.remove("light-tree-checkbox-indeterminate");
     treeNode.classList.remove("light-tree-treenode-checkbox-indeterminate");
+    let checkedKeys = tree.querySelector('div[role="tree"] input').checkedKeys;
     if (checked === "checked") {
       element.classList.add("light-tree-checkbox-checked");
       treeNode.classList.add("light-tree-treenode-checkbox-checked");
-      if (treeNode.querySelector(".light-tree-indent")) {
-        //如果存在父级，则向上轮询
-        let parentTreeNode = treeList.querySelector(
-          `div[data-value="${treeNode.getAttribute("data-parentvalue")}"]`
-        );
-        if (parentTreeNode) {
-          parentTreeNode.treeCheckedChild += 1;
-          prevCheckboxHandle({
-            element: parentTreeNode.querySelector(".light-tree-checkbox"),
-            checked: "indeterminate",
-            childFieldName,
-            valueFieldName
-          });
-        }
+      if (checkedKeys instanceof Array) {
+        checkedKeys.push(treeNode.treeNodeData);
+      } else {
+        checkedKeys = [treeNode.treeNodeData];
       }
+      tree.querySelector('div[role="tree"] input').checkedKeys = checkedKeys;
+      // if (treeNode.querySelector(".light-tree-indent")) {
+      //   //如果存在父级，则向上轮询
+      //   let parentTreeNode = treeList.querySelector(
+      //     `div[data-value="${treeNode.getAttribute("data-parentvalue")}"]`
+      //   );
+      //   if (parentTreeNode) {
+      //     parentTreeNode.treeCheckedChild += 1;
+      //     prevCheckboxHandle({
+      //       element: parentTreeNode.querySelector(".light-tree-checkbox"),
+      //       checked: "indeterminate",
+      //       childFieldName,
+      //       valueFieldName
+      //     });
+      //   }
+      // }
       //如果存在子集，则向下轮询
       let childData = treeNode.treeNodeData[childFieldName];
       childData.forEach(item => {
@@ -253,6 +283,16 @@
       element.classList.remove("light-tree-checkbox-checked");
       treeNode.classList.remove("light-tree-treenode-checkbox-checked");
       treeNode.treeCheckedChild = 0;
+      if (checkedKeys instanceof Array) {
+        checkedKeys.forEach((item, index) => {
+          if (item[valueFieldName] === treeNode.treeNodeData[valueFieldName]) {
+            checkedKeys.splice(index, 1);
+          }
+        });
+      } else {
+        checkedKeys = [];
+      }
+      tree.querySelector('div[role="tree"] input').checkedKeys = checkedKeys;
       if (treeNode.querySelector(".light-tree-indent")) {
         //如果存在父级，则向上轮询
         let parentTreeNode = treeList.querySelector(
@@ -263,7 +303,7 @@
             parentTreeNode.treeCheckedChild -= 1;
           prevCheckboxHandle({
             element: parentTreeNode.querySelector(".light-tree-checkbox"),
-            checked: "indeterminate",
+            checked: "inchecked",
             childFieldName,
             valueFieldName
           });
@@ -348,6 +388,33 @@
     }
   }
 
+  function deleteElementHandle(params) {
+    let { data, valueFieldName, childFieldName, _tree } = params;
+    if (data.length > 0) {
+      data.forEach(item => {
+        if (
+          _tree.querySelector(
+            `div.light-tree-treenode[data-value="${item[valueFieldName]}"]`
+          )
+        ) {
+          _tree
+            .querySelector(
+              `div.light-tree-treenode[data-value="${item[valueFieldName]}"]`
+            )
+            .remove();
+        }
+        if (item[childFieldName] && item[childFieldName].length > 0) {
+          deleteElementHandle({
+            data: item[childFieldName],
+            valueFieldName,
+            childFieldName,
+            _tree
+          });
+        }
+      });
+    }
+  }
+
   function _returnTreeNodeElement(params) {
     let {
       item,
@@ -359,6 +426,9 @@
       textFieldName, //界面展示的字段
       valueFieldName, //code映射的字段
       childFieldName, //子集映射的字段
+      checkedFieldName,
+      checkboxDisableFieldName,
+      expandFieldName,
       parentNode,
       _tree
     } = params;
@@ -412,11 +482,30 @@
       </div>`
     );
 
+    if (item[checkboxDisableFieldName]) {
+      _treeNode
+        .querySelector(".light-tree-checkbox")
+        .classList.add("light-tree-checkbox-disabled");
+    }
+
+    if (item[checkedFieldName]) {
+      _treeNode
+        .querySelector(".light-tree-checkbox")
+        .classList.add("light-tree-checkbox-checked");
+      if (_tree.querySelector('div[role="tree"] input').checkedKeys) {
+        _tree.querySelector('div[role="tree"] input').checkedKeys.push(item);
+      } else {
+        _tree.querySelector('div[role="tree"] input').checkedKeys = [item];
+      }
+    }
+
     //将节点数据，绑定到树节点上
     _treeNode.treeNodeData = item;
     /* 将子集数量，及子集选中数量，绑定到dom */
     if (checkable) {
-      _treeNode.treeChildCount = _treeNode.treeNodeData[childFieldName].length;
+      _treeNode.treeChildCount = _treeNode.treeNodeData[childFieldName]
+        ? _treeNode.treeNodeData[childFieldName].length
+        : 0;
       _treeNode.treeCheckedChild = 0;
     }
 
@@ -431,7 +520,7 @@
           if (onExpand && onExpand instanceof Function) {
             onExpand(_treeNode);
           }
-          let childData = _treeNode.treeNodeData[childFieldName];
+          let childData = _treeNode.treeNodeData[childFieldName] || [];
           let childNode = [];
           //如果存在子节点时
           if (childData && childData.length > 0) {
@@ -447,6 +536,9 @@
                   textFieldName, //界面展示的字段
                   valueFieldName, //code映射的字段
                   childFieldName, //子集映射的字段
+                  checkedFieldName,
+                  checkboxDisableFieldName,
+                  expandFieldName,
                   parentNode: _treeNode,
                   _tree
                 })
@@ -463,6 +555,9 @@
                 _tree
                   .querySelector(".light-tree-list-holder-inner")
                   .appendChild(item);
+              }
+              if (item.treeNodeData[expandFieldName]) {
+                item.querySelector(".light-tree-switcher").click();
               }
             });
             /* 切换展开样式 */
@@ -510,12 +605,13 @@
             .querySelector(".light-tree-switcher")
             .classList.remove("light-tree-node-content-wrapper-open");
           /* 删除子节点 */
-          let childData = _treeNode.treeNodeData[childFieldName];
-          for (let i = 0; i < childData.length; i++) {
-            if (_treeNode.nextSibling) {
-              _treeNode.nextSibling.remove();
-            }
-          }
+          let childData = _treeNode.treeNodeData[childFieldName] || [];
+          deleteElementHandle({
+            data: childData,
+            valueFieldName,
+            childFieldName,
+            _tree
+          });
         }
       });
 
@@ -561,6 +657,9 @@
         .addEventListener("click", event => {
           event.stopPropagation();
           let _this = event.currentTarget;
+          if (_this.classList.contains("light-tree-checkbox-disabled")) {
+            return false;
+          }
           if (_this.classList.contains("light-tree-checkbox-checked")) {
             checkboxHandle({
               element: _this,
@@ -583,14 +682,19 @@
     }
 
     //如果存在上级节点时，需要判断当前节点是否被选中
-    if (parentNode && parentNode instanceof HTMLElement) {
+    if (
+      parentNode &&
+      parentNode instanceof HTMLElement &&
+      _treeNode.querySelector(".light-tree-checkbox")
+    ) {
       if (parentNode.treeCheckedChild === parentNode.treeChildCount) {
         _treeNode
           .querySelector(".light-tree-checkbox")
           .classList.add("light-tree-checkbox-checked");
         _treeNode.classList.add("light-tree-treenode-checkbox-checked");
-        _treeNode.treeCheckedChild =
-          _treeNode.treeNodeData[childFieldName].length;
+        _treeNode.treeCheckedChild = _treeNode.treeNodeData[childFieldName]
+          ? _treeNode.treeNodeData[childFieldName].length
+          : 0;
       }
     }
     return _treeNode;
@@ -609,6 +713,7 @@
       valueFieldName, //code映射的字段,
       childFieldName, //子集映射的字段
       checkedFieldName, //是否选中映射的字段
+      checkboxDisableFieldName,
       expandFieldName, //是否展开映射的字段
       _tree //树dom
     } = params;
@@ -633,15 +738,20 @@
         valueFieldName, //code映射的字段
         childFieldName, //子集映射的字段
         checkedFieldName, //是否选中映射的字段
+        checkboxDisableFieldName, //checkbox是否可选映射字段
         expandFieldName, //是否展开映射的字段
         _tree
       });
       _tree
         .querySelector(".light-tree-list-holder-inner")
         .appendChild(treeNode);
-      if (item[checkedFieldName]) {
+      if (
+        item[checkedFieldName] &&
+        !treeNode.querySelector(".light-tree-checkbox-checked")
+      ) {
         treeNode.querySelector(".light-tree-checkbox").click();
       }
+
       if (item[expandFieldName]) {
         treeNode.querySelector(".light-tree-switcher").click();
       }
@@ -661,6 +771,7 @@
       valueFieldName, //code映射的字段
       childFieldName, //子集映射的字段
       checkedFieldName, //是否选中映射的字段
+      checkboxDisableFieldName,
       expandFieldName, //是否展开映射的字段
       _tree //树dom
     } = params;
@@ -678,6 +789,7 @@
       valueFieldName, //code映射的字段
       childFieldName, //子集映射的字段
       checkedFieldName, //是否选中映射的字段
+      checkboxDisableFieldName,
       expandFieldName, //是否展开映射的字段
       _tree //树dom
     });
@@ -711,6 +823,7 @@
       valueFieldName = "name",
       childFieldName = "childs",
       checkedFieldName = "checked",
+      checkboxDisableFieldName = "checkDisabled",
       expandFieldName = "isExpand"
     } = props;
 
@@ -737,6 +850,7 @@
       childFieldName,
       checkedFieldName,
       expandFieldName,
+      checkboxDisableFieldName,
       _tree
     });
 
@@ -764,6 +878,7 @@
               valueFieldName, //code映射的字段
               childFieldName, //子集映射的字段
               checkedFieldName, //是否选中映射的字段
+              checkboxDisableFieldName,
               expandFieldName, //是否展开映射的字段
               parentNode: element,
               _tree
