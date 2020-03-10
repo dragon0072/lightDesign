@@ -264,7 +264,7 @@
       //   }
       // }
       //如果存在子集，则向下轮询
-      let childData = treeNode.treeNodeData[childFieldName];
+      let childData = treeNode.treeNodeData[childFieldName] || [];
       childData.forEach(item => {
         let node = treeList.querySelector(
           `span.light-tree-checkbox[data-value="${item[valueFieldName]}"]`
@@ -310,7 +310,7 @@
         }
       }
       //如果存在子集，则向下轮询
-      let childData = treeNode.treeNodeData[childFieldName];
+      let childData = treeNode.treeNodeData[childFieldName] || [];
       childData.forEach(item => {
         let node = treeList.querySelector(
           `span.light-tree-checkbox[data-value="${item[valueFieldName]}"]`
@@ -493,7 +493,14 @@
         .querySelector(".light-tree-checkbox")
         .classList.add("light-tree-checkbox-checked");
       if (_tree.querySelector('div[role="tree"] input').checkedKeys) {
-        _tree.querySelector('div[role="tree"] input').checkedKeys.push(item);
+        let findData = _tree
+          .querySelector('div[role="tree"] input')
+          .checkedKeys.find(
+            data => data[valueFieldName] === item[valueFieldName]
+          );
+        if (!findData) {
+          _tree.querySelector('div[role="tree"] input').checkedKeys.push(item);
+        }
       } else {
         _tree.querySelector('div[role="tree"] input').checkedKeys = [item];
       }
