@@ -44,7 +44,7 @@
               </g>
             </svg>
           </div>
-          <p class="light-empty-description">No Data</p>
+          <p class="light-empty-description" rcube-lng="lng_noData">No Data</p>
         </div>
       </div>`
     );
@@ -99,7 +99,10 @@
           }
         });
       } else {
-        let tdData = data[field] || "";
+        let tdData =
+          !data[field] || data[field].toString().isNullOrEmpty()
+            ? ""
+            : data[field];
         if (render && typeof render === "function") {
           tdData = render(data, rowKey);
         }
@@ -405,7 +408,13 @@
     }
    */
   function Table(props) {
-    const { bordered = true, columns = [], id, pageable = true } = props;
+    const {
+      bordered = true,
+      columns = [],
+      id,
+      pageable = true,
+      scroll
+    } = props;
     let { dataSource = [] } = props;
 
     //生成table主体

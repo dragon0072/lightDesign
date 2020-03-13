@@ -285,7 +285,7 @@
   };
 
   String.prototype.format = function(args) {
-    if (arguments.length > 0) {
+    if (arguments.length > 0 && args !== undefined && args !== null) {
       let result = this;
       if (arguments.length == 1 && typeof args == "object") {
         for (let key in args) {
@@ -302,9 +302,9 @@
           }
         }
       }
-      return result;
+      return result.toString();
     } else {
-      return this;
+      return this.toString();
     }
   };
 

@@ -1,4 +1,4 @@
-require("../view/js/global");
+require("../view/js/global.js");
 require("../view/js/components/tree/tree.js");
 require("../view/js/components/checkbox/checkbox.js");
 require("../view/js/components/upload/upload.js");
