@@ -44,7 +44,9 @@
               </g>
             </svg>
           </div>
-          <p class="light-empty-description" rcube-lng="lng_noData">No Data</p>
+          <p class="light-empty-description">${window.lightDesign.formatMessage(
+            "common-noData"
+          )}</p>
         </div>
       </div>`
     );

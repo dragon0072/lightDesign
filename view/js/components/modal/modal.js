@@ -96,8 +96,8 @@
       footer = true,
       title = "",
       content = "",
-      okText = "确 认",
-      cancelText = "取 消",
+      okText = window.lightDesign.formatMessage("modal-button-success"),
+      cancelText = window.lightDesign.formatMessage("modal-button-cancel"),
       onOk,
       onCancel,
       width = "520px"

@@ -1,3 +1,6 @@
+require("../view/js/locales/zh-CN.js");
+require("../view/js/locales/zh-MO.js");
+require("../view/js/locales/en-US.js");
 require("../view/js/global.js");
 require("../view/js/components/tree/tree.js");
 require("../view/js/components/checkbox/checkbox.js");

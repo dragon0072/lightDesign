@@ -185,7 +185,9 @@
     let jumpDom;
     if (type === "next") {
       jumpDom = window.lightDesign.parseHTML(
-        `<li title="Next 5 Pages" tabindex="0" class="light-pagination-jump-next light-pagination-jump-next-custom-icon">
+        `<li title="${window.lightDesign.formatMessage(
+          "pagination-jumpNext"
+        )}" tabindex="0" class="light-pagination-jump-next light-pagination-jump-next-custom-icon">
           <a class="light-pagination-item-link">
             <div class="light-pagination-item-container">
               <i aria-label="icon: double-right" class="anticon anticon-double-right light-pagination-item-link-icon">
@@ -200,7 +202,9 @@
       );
     } else {
       jumpDom = window.lightDesign.parseHTML(
-        `<li title="Previous 5 Pages" tabindex="0" class="light-pagination-jump-prev light-pagination-jump-prev-custom-icon">
+        `<li title="${window.lightDesign.formatMessage(
+          "pagination-jumpPrev"
+        )}" tabindex="0" class="light-pagination-jump-prev light-pagination-jump-prev-custom-icon">
           <a class="light-pagination-item-link">
             <div class="light-pagination-item-container">
               <i aria-label="icon: double-left" class="anticon anticon-double-left light-pagination-item-link-icon">
@@ -246,7 +250,9 @@
     let pageCount = Math.ceil(total / pageSize) || 1;
 
     let prevDom = window.lightDesign.parseHTML(
-      `<li title="Prev" class="light-pagination-prev ${pageDisabledClass}" aria-disabled="true">
+      `<li title="${window.lightDesign.formatMessage(
+        "pagination-prev"
+      )}" class="light-pagination-prev ${pageDisabledClass}" aria-disabled="true">
         <a class="light-pagination-item-link">
           <i aria-label="icon: left" class="anticon anticon-left">
             <svg viewBox="64 64 896 896" focusable="false" class="" data-icon="left" width="1em" height="1em" fill="currentColor" aria-hidden="true">
@@ -258,7 +264,9 @@
     );
 
     let nextDom = window.lightDesign.parseHTML(
-      `<li title="Next" tabindex="0" class="light-pagination-next ${
+      `<li title="${window.lightDesign.formatMessage(
+        "pagination-next"
+      )}" tabindex="0" class="light-pagination-next ${
         current === pageCount ? pageDisabledClass : ""
       }" aria-disabled="${current === pageCount ? true : false}">
         <a class="light-pagination-item-link">

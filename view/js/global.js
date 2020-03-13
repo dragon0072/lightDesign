@@ -257,9 +257,42 @@
           v = c == "x" ? r : (r & 0x3) | 0x8;
         return v.toString(16);
       });
+    },
+    /**
+     * 根据多语言key值，生成字符串
+     * @param {string} id key值
+     * @param {string/json} params 参数
+     */
+    formatMessage: (id, params) => {
+      let lngType = localStorage.getItem("light-design-lng");
+      //如果没有key值，则返回空
+      if (!id || id.isNullOrEmpty()) return "";
+      let lngData = window.lightDesign.languageData[lngType];
+      if (
+        lngData instanceof Object &&
+        lngData !== undefined &&
+        lngData !== null
+      ) {
+        let str = "";
+        for (const key in lngData) {
+          if (lngData.hasOwnProperty(key)) {
+            if (id === key) {
+              str = lngData[id];
+            }
+          }
+        }
+        if (!str.isNullOrEmpty() && params) {
+          str.format(params);
+        }
+        return str;
+      } else {
+        return "";
+      }
     }
   };
-  window.lightDesign = lightDesignGlobal;
+  window.lightDesign = window.lightDesign
+    ? { ...window.lightDesign, ...lightDesignGlobal }
+    : lightDesignGlobal;
 
   //字符串去除空格
   String.prototype.replaceSpace = function() {
