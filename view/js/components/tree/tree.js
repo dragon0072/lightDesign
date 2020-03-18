@@ -169,7 +169,10 @@
       let checkedKeys = tree.querySelector('div[role="tree"] input')
         .checkedKeys;
       if (checkedKeys instanceof Array) {
-        checkedKeys.push(treeNode.treeNodeData);
+        let findData = checkedKeys.find(
+          key => key[valueFieldName] === treeNode.treeNodeData[valueFieldName]
+        );
+        if (!findData) checkedKeys.push(treeNode.treeNodeData);
       } else {
         checkedKeys = [treeNode.treeNodeData];
       }
@@ -244,7 +247,10 @@
       element.classList.add("light-tree-checkbox-checked");
       treeNode.classList.add("light-tree-treenode-checkbox-checked");
       if (checkedKeys instanceof Array) {
-        checkedKeys.push(treeNode.treeNodeData);
+        let findData = checkedKeys.find(
+          key => key[valueFieldName] === treeNode.treeNodeData[valueFieldName]
+        );
+        if (!findData) checkedKeys.push(treeNode.treeNodeData);
       } else {
         checkedKeys = [treeNode.treeNodeData];
       }
@@ -590,17 +596,27 @@
               .querySelector(".light-tree-switcher")
               .classList.remove("light-tree-node-content-wrapper-close");
           } else {
-            _treeNode.querySelector(".light-tree-switcher").remove();
-            _treeNode
-              .querySelector(".light-tree-indent-unit-start")
-              .classList.remove("light-tree-indent-unit-start");
-            _treeNode
-              .querySelector(".light-tree-indent")
-              .appendChild(
+            if (_treeNode.querySelector(".light-tree-indent")) {
+              _treeNode.querySelector(".light-tree-switcher").remove();
+              _treeNode
+                .querySelector(".light-tree-indent-unit-start")
+                .classList.remove("light-tree-indent-unit-start");
+              _treeNode
+                .querySelector(".light-tree-indent")
+                .appendChild(
+                  window.lightDesign.parseHTML(
+                    '<span class="light-tree-indent-unit light-tree-indent-unit-start"></span>'
+                  )
+                );
+            } else {
+              _treeNode.querySelector(".light-tree-switcher").replaceWith(
                 window.lightDesign.parseHTML(
-                  '<span class="light-tree-indent-unit light-tree-indent-unit-start"></span>'
+                  `<span aria-hidden="true" class="light-tree-indent">
+                      <span class="light-tree-indent-unit light-tree-indent-unit-start"></span>
+                    </span>`
                 )
               );
+            }
           }
         } else {
           /* 切换展开样式 */
