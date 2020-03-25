@@ -6308,7 +6308,7 @@ a.light-btn-sm {
 .light-cascader-menu-item-active:not(.light-cascader-menu-item-disabled),
 .light-cascader-menu-item-active:not(.light-cascader-menu-item-disabled):hover {
     font-weight: 600;
-    background-color: #fafafa;
+    background-color: #e6f7ff;
 }
 
 .light-cascader-menu-item-expand {

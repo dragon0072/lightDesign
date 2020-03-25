@@ -15,10 +15,10 @@ window.onload = () => {
   //   style: "width:120px;",
   //   value: 1
   // });
-  document.querySelector("#upload").lightUpload({
-    accept: ".xlsx",
-    multiple: true
-  });
+  // document.querySelector("#upload").lightUpload({
+  //   accept: ".xlsx",
+  //   multiple: true
+  // });
   // document.querySelector("#alert").lightAlert({
   //   type: "success",
   //   message: "success",
@@ -156,4 +156,29 @@ window.onload = () => {
   //   checkable: true,
   //   checkboxDisableFieldName: "IsCreated",
   // });
+
+  // document.querySelector("#app").lightModal({
+  //   id: "app",
+  //   title: "test",
+  //   content: '<div id="app1"></div>'
+  // });
+
+  document.querySelector("#app").lightCascader({
+    dataSource: [
+      {
+        code: "1",
+        name: "1",
+        children: [
+          {
+            code: "11",
+            name: "11"
+          }
+        ]
+      },
+      {
+        code: "2",
+        name: "2"
+      }
+    ]
+  });
 };

@@ -138,6 +138,7 @@
     /**
      * 根据字符串，生成dom元素
      * @param {string} data
+     * @returns {HTMLElement}
      */
     parseHTML: function(data) {
       if (typeof data !== "string") {
@@ -288,6 +289,34 @@
       } else {
         return "";
       }
+    },
+    /**
+     * 获取当前dom在页面中的距离左侧多少像素点
+     */
+    getElementLeft: element => {
+      var actualLeft = element.offsetLeft;
+      var current = element.offsetParent;
+
+      while (current !== null) {
+        actualLeft += current.offsetLeft;
+        current = current.offsetParent;
+      }
+
+      return actualLeft;
+    },
+    /**
+     * 获取当前dom在页面中的距离顶部多少像素点
+     */
+    getElementTop: element => {
+      var actualTop = element.offsetTop;
+      var current = element.offsetParent;
+
+      while (current !== null) {
+        actualTop += current.offsetTop;
+        current = current.offsetParent;
+      }
+
+      return actualTop;
     }
   };
   window.lightDesign = window.lightDesign
