@@ -184,3 +184,9 @@ window.onload = () => {
   //   ]
   // });
 };
+
+lightNotification({
+  type: "success",
+  message: "123",
+  duration: 0
+});

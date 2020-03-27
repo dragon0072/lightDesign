@@ -14,6 +14,10 @@
     "upload-duplica-file-error": "Do not upload the same file again!",
     "upload-download-file": "Download",
     "upload-delete-file": "Delete",
-    "upload-preview-file": "Preview file"
+    "upload-preview-file": "Preview file",
+    "notification-message-success": "Success",
+    "notification-message-error": "Error",
+    "notification-message-info": "Infomation",
+    "notification-message-warning": "Warning"
   };
 })();
