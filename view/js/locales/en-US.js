@@ -13,6 +13,7 @@
     "upload-button-name": "Upload",
     "upload-duplica-file-error": "Do not upload the same file again!",
     "upload-download-file": "Download",
-    "upload-delete-file": "Delete"
+    "upload-delete-file": "Delete",
+    "upload-preview-file": "Preview file"
   };
 })();

@@ -13,6 +13,7 @@
     "upload-button-name": "上传",
     "upload-duplica-file-error": "请勿重复上传相同文件！",
     "upload-download-file": "下载文件",
-    "upload-delete-file": "删除文件"
+    "upload-delete-file": "删除文件",
+    "upload-preview-file": "查看图片"
   };
 })();
