@@ -28,10 +28,7 @@
       if (document.querySelector(`div[data-blurid="${_guid}"]`)) {
         document.querySelector(`div[data-blurid="${_guid}"]`).remove();
       }
-      document
-        .getElementById(_guid)
-        .querySelector(".light-cascader-menus")
-        .classList.add(_cascaderHiddenClass);
+      document.getElementById(_guid).querySelector(".light-cascader-menus").classList.add(_cascaderHiddenClass);
       return;
     }
     let blur = window.lightDesign.parseHTML(
@@ -39,32 +36,17 @@
     );
     blur.addEventListener("click", event => {
       event.stopPropagation();
-      document
-        .getElementById(_guid)
-        .querySelector(".light-cascader-menus")
-        .classList.add(_cascaderHiddenClass);
+      document.getElementById(_guid).querySelector(".light-cascader-menus").classList.add(_cascaderHiddenClass);
       blur.remove();
     });
     document.body.appendChild(blur);
   }
 
   function _returnItem(props) {
-    const {
-      item,
-      textFieldName,
-      valueFieldName,
-      childrenFieldName,
-      onChange,
-      _cascaderList,
-      _cascader
-    } = props;
+    const { item, textFieldName, valueFieldName, childrenFieldName, onChange, _cascaderList, _cascader } = props;
     let liElem = window.lightDesign.parseHTML(
-      `<li data-value="${
-        item[valueFieldName]
-      }" class="light-cascader-menu-item ${
-        item[childrenFieldName] && item[childrenFieldName].length > 0
-          ? "light-cascader-menu-item-expand"
-          : ""
+      `<li data-value="${item[valueFieldName]}" class="light-cascader-menu-item ${
+        item[childrenFieldName] && item[childrenFieldName].length > 0 ? "light-cascader-menu-item-expand" : ""
       }" title="${item[textFieldName]}" role="menuitem">${item[textFieldName]}
       ${
         item[childrenFieldName] && item[childrenFieldName].length > 0
@@ -96,10 +78,7 @@
         onChange(item[valueFieldName]);
       }
       if (_this.cascaderChildData.length === 0) {
-        if (
-          _this.closest("ul").nextSibling &&
-          _this.closest("ul").nextSibling.nodeName.toLowerCase() === "ul"
-        ) {
+        if (_this.closest("ul").nextSibling && _this.closest("ul").nextSibling.nodeName.toLowerCase() === "ul") {
           _this.closest("ul").nextSibling.remove();
         }
         // _cascaderList
@@ -108,13 +87,10 @@
         toggleBlur({ _guid: _cascaderList.id, isRemove: true });
       }
       _cascader.selectValue = [];
-      _cascaderList
-        .querySelectorAll(`.${_cascaderActivedClass}`)
-        .forEach(item => {
-          _cascader.selectValue.push(item.getAttribute("data-value"));
-        });
-      _cascader.querySelector(".light-cascader-picker-label").innerText =
-        item[textFieldName];
+      _cascaderList.querySelectorAll(`.${_cascaderActivedClass}`).forEach(item => {
+        _cascader.selectValue.push(item.getAttribute("data-value"));
+      });
+      _cascader.querySelector(".light-cascader-picker-label").innerText = item[textFieldName];
 
       renderNextSiblingCascaderItem({
         dataSouce: _this.cascaderChildData,
@@ -124,35 +100,21 @@
         onChange,
         _cascaderList,
         _cascader,
-        _this
+        _this,
       });
     });
     return liElem;
   }
 
   function renderNextSiblingCascaderItem(props) {
-    const {
-      dataSouce,
-      textFieldName,
-      valueFieldName,
-      childrenFieldName,
-      onChange,
-      _cascaderList,
-      _cascader,
-      _this
-    } = props;
+    const { dataSouce, textFieldName, valueFieldName, childrenFieldName, onChange, _cascaderList, _cascader, _this } = props;
 
     if (!dataSouce || dataSouce.length === 0) {
       return;
     }
 
-    let ul = window.lightDesign.parseHTML(
-      `<ul class="light-cascader-menu"></ul>`
-    );
-    if (
-      _this.closest("ul").nextSibling &&
-      _this.closest("ul").nextSibling.nodeName.toLowerCase() === "ul"
-    ) {
+    let ul = window.lightDesign.parseHTML(`<ul class="light-cascader-menu"></ul>`);
+    if (_this.closest("ul").nextSibling && _this.closest("ul").nextSibling.nodeName.toLowerCase() === "ul") {
       _this.closest("ul").nextSibling.remove();
     }
 
@@ -164,7 +126,7 @@
         childrenFieldName,
         onChange,
         _cascaderList,
-        _cascader
+        _cascader,
       });
       ul.appendChild(liElem);
     });
@@ -172,15 +134,7 @@
   }
 
   function renderCascaderLiItem(props) {
-    const {
-      dataSource,
-      textFieldName,
-      valueFieldName,
-      childrenFieldName,
-      onChange,
-      _cascaderList,
-      _cascader
-    } = props;
+    const { dataSource, textFieldName, valueFieldName, childrenFieldName, onChange, _cascaderList, _cascader } = props;
 
     dataSource.forEach(item => {
       let liElem = _returnItem({
@@ -190,26 +144,17 @@
         childrenFieldName,
         onChange,
         _cascaderList,
-        _cascader
+        _cascader,
       });
       _cascaderList.querySelector(".light-cascader-menu").appendChild(liElem);
     });
   }
 
   function renderCascaderList(props) {
-    const {
-      dataSource,
-      textFieldName,
-      valueFieldName,
-      childrenFieldName,
-      onChange,
-      _cascader,
-      _guid
-    } = props;
+    const { dataSource, textFieldName, valueFieldName, childrenFieldName, onChange, _cascader, _guid } = props;
 
     const left = _cascader.getBoundingClientRect().left;
-    const top =
-      _cascader.getBoundingClientRect().top + _cascader.offsetHeight + 3;
+    const top = _cascader.getBoundingClientRect().top + _cascader.offsetHeight + 3;
 
     let _cascaderList = window.lightDesign.parseHTML(
       `<div id="${_guid}" style="position: absolute; top: 0px; left: 0px; width: 100%;">
@@ -228,7 +173,7 @@
       childrenFieldName,
       onChange,
       _cascaderList,
-      _cascader
+      _cascader,
     });
 
     document.body.appendChild(_cascaderList);
@@ -247,7 +192,7 @@
       placeholder = "",
       textFieldName = "name",
       valueFieldName = "code",
-      childrenFieldName = "children"
+      childrenFieldName = "children",
     } = props;
     const _guid = window.lightDesign.guid();
     let _cascader = window.lightDesign.parseHTML(
@@ -272,37 +217,23 @@
           childrenFieldName,
           onChange,
           _cascader,
-          _guid
+          _guid,
         });
-        document
-          .getElementById(_guid)
-          .querySelector(".light-cascader-menus")
-          .classList.remove(_cascaderHiddenClass);
+        document.getElementById(_guid).querySelector(".light-cascader-menus").classList.remove(_cascaderHiddenClass);
         toggleBlur({ _guid });
         return;
       }
 
       toggleBlur({ _guid });
 
-      if (
-        document
-          .getElementById(_guid)
-          .querySelector(".light-cascader-menus")
-          .classList.contains(_cascaderHiddenClass)
-      ) {
-        document
-          .getElementById(_guid)
-          .querySelector(".light-cascader-menus")
-          .classList.remove(_cascaderHiddenClass);
+      if (document.getElementById(_guid).querySelector(".light-cascader-menus").classList.contains(_cascaderHiddenClass)) {
+        document.getElementById(_guid).querySelector(".light-cascader-menus").classList.remove(_cascaderHiddenClass);
       } else {
-        document
-          .getElementById(_guid)
-          .querySelector(".light-cascader-menus")
-          .classList.add(_cascaderHiddenClass);
+        document.getElementById(_guid).querySelector(".light-cascader-menus").classList.add(_cascaderHiddenClass);
       }
     });
 
-    _cascader.lightSelect = {
+    _cascader.lightCascader = {
       event: {
         selectValue(values) {
           if (!document.getElementById(_guid)) {
@@ -313,52 +244,33 @@
               childrenFieldName,
               onChange,
               _cascader,
-              _guid
+              _guid,
             });
           }
           if (values && values instanceof Array && values.length > 0) {
             values.forEach(item => {
-              if (
-                document
-                  .getElementById(_guid)
-                  .querySelector(`[data-value="${item}"]`)
-              ) {
-                document
-                  .getElementById(_guid)
-                  .querySelector(`[data-value="${item}"]`)
-                  .click();
+              if (document.getElementById(_guid).querySelector(`[data-value="${item}"]`)) {
+                document.getElementById(_guid).querySelector(`[data-value="${item}"]`).click();
               }
             });
             _cascader.selectValue = values;
           } else if (typeof values === "string" && !values.isNullOrEmpty()) {
-            let selectValue = findParentsById(
-              dataSource,
-              values,
-              valueFieldName,
-              childrenFieldName
-            );
+            let selectValue = findParentsById(dataSource, values, valueFieldName, childrenFieldName);
             selectValue.push(values);
             selectValue.forEach(item => {
-              if (
-                document
-                  .getElementById(_guid)
-                  .querySelector(`[data-value="${item}"]`)
-              ) {
-                document
-                  .getElementById(_guid)
-                  .querySelector(`[data-value="${item}"]`)
-                  .click();
+              if (document.getElementById(_guid).querySelector(`[data-value="${item}"]`)) {
+                document.getElementById(_guid).querySelector(`[data-value="${item}"]`).click();
               }
             });
             _cascader.selectValue = selectValue;
           }
-        }
-      }
+        },
+      },
     };
     return _cascader;
   }
 
-  HTMLElement.prototype.lightCascader = function(props) {
+  HTMLElement.prototype.lightCascader = function (props) {
     //如果没有设置id，则使用当前dom的id，或者guid
     if (!props.id) {
       props.id = this.id || window.lightDesign.guid();
