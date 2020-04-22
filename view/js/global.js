@@ -1,4 +1,4 @@
-(function() {
+(function () {
   const rsingleTag = /^<([a-z][^\/\0>:\x20\t\r\n\f]*)[\x20\t\r\n\f]*\/?>(?:<\/\1>|)$/i,
     rhtml = /<|&#?\w+;/,
     rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([a-z][^\/\0>\x20\t\r\n\f]*)[^>]*)\/>/gi,
@@ -9,11 +9,10 @@
       col: [2, "<table><colgroup>", "</colgroup></table>"],
       tr: [2, "<table><tbody>", "</tbody></table>"],
       td: [3, "<table><tbody><tr>", "</tr></tbody></table>"],
-      _default: [0, "", ""]
+      _default: [0, "", ""],
     };
   wrapMap.optgroup = wrapMap.option;
-  wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption =
-    wrapMap.thead;
+  wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
   wrapMap.th = wrapMap.td;
 
   //定义统一的xmlhttp请求
@@ -140,7 +139,7 @@
      * @param {string} data
      * @returns {HTMLElement}
      */
-    parseHTML: function(data) {
+    parseHTML: function (data) {
       if (typeof data !== "string") {
         return [];
       }
@@ -179,10 +178,7 @@
       const { params, headers, async = false } = options;
       if (window.lightDesignXhr != null) {
         window.lightDesignXhr.open("POST", url, false);
-        window.lightDesignXhr.setRequestHeader(
-          "Content-Type",
-          "application/json"
-        );
+        window.lightDesignXhr.setRequestHeader("Content-Type", "application/json");
         if (objectIsNotEmpty(headers)) {
           setRequestHeader(window.lightDesignXhr, headers);
         }
@@ -194,7 +190,7 @@
         alert("Your browser does not support XMLHTTP.");
       }
     },
-    httpUpload: function(url, options) {
+    httpUpload: function (url, options) {
       const { params, headers, async = false } = options;
       if (window.lightDesignXhr != null) {
         window.lightDesignXhr.open("POST", url, false);
@@ -209,7 +205,7 @@
         alert("Your browser does not support XMLHTTP.");
       }
     },
-    httpDownload: function(url, options) {
+    httpDownload: function (url, options) {
       const { params, headers } = options;
       //拼接url加query
       var query = "",
@@ -229,10 +225,7 @@
         }
         window.lightDesignXhr.send(null);
         window.lightDesignXhr.onreadystatechange = () => {
-          if (
-            window.lightDesignXhr.status === 200 &&
-            window.lightDesignXhr.readyState === 4
-          ) {
+          if (window.lightDesignXhr.status === 200 && window.lightDesignXhr.readyState === 4) {
             let blob = window.lightDesignXhr.response;
             if (window.navigator.msSaveOrOpenBlob) {
               navigator.msSaveBlob(blob, filename);
@@ -251,9 +244,7 @@
       }
     },
     guid: () => {
-      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(
-        c
-      ) {
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
         var r = (Math.random() * 16) | 0,
           v = c == "x" ? r : (r & 0x3) | 0x8;
         return v.toString(16);
@@ -269,11 +260,7 @@
       //如果没有key值，则返回空
       if (!id || id.isNullOrEmpty()) return "";
       let lngData = window.lightDesign.languageData[lngType];
-      if (
-        lngData instanceof Object &&
-        lngData !== undefined &&
-        lngData !== null
-      ) {
+      if (lngData instanceof Object && lngData !== undefined && lngData !== null) {
         let str = "";
         for (const key in lngData) {
           if (lngData.hasOwnProperty(key)) {
@@ -317,36 +304,30 @@
       }
 
       return actualTop;
-    }
+    },
   };
-  window.lightDesign = window.lightDesign
-    ? { ...window.lightDesign, ...lightDesignGlobal }
-    : lightDesignGlobal;
+  window.lightDesign = window.lightDesign ? { ...window.lightDesign, ...lightDesignGlobal } : lightDesignGlobal;
 
   //字符串去除空格
-  String.prototype.replaceSpace = function() {
+  String.prototype.replaceSpace = function () {
     return this.replace(/\ +/g, "");
   };
 
   //字符串去除回车和空格
-  String.prototype.replaceEnter = function() {
+  String.prototype.replaceEnter = function () {
     return this.replace(/[\r\n]\ +/g, "");
   };
 
   //字符串判断是否为空
-  String.prototype.isNullOrEmpty = function() {
-    if (
-      this == null ||
-      this == undefined ||
-      this.replace(/(^\s*)|(\s*$)/g, "") == ""
-    ) {
+  String.prototype.isNullOrEmpty = function () {
+    if (this == null || this == undefined || this.replace(/(^\s*)|(\s*$)/g, "") == "") {
       return true;
     } else {
       return false;
     }
   };
 
-  String.prototype.format = function(args) {
+  String.prototype.format = function (args) {
     if (arguments.length > 0 && args !== undefined && args !== null) {
       let result = this;
       if (arguments.length == 1 && typeof args == "object") {
@@ -371,7 +352,7 @@
   };
 
   //日期格式化
-  Date.prototype.toStringFormat = function(str) {
+  Date.prototype.toStringFormat = function (str = "yyyy-MM-dd HH:mm:ss") {
     let strDate = "";
     let year = this.getFullYear(),
       month = this.getMonth() + 1,

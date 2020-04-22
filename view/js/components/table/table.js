@@ -571,7 +571,7 @@
   }
 
   //删除行
-  function _removeRecord(_id, _table) {
+  function _removeRecord(_id, columns, _table) {
     if (_table.lightTable.data.isHttp) {
       _table.lightTable.event.refresh();
       return;
