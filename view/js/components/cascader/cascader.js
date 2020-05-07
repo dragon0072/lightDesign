@@ -106,6 +106,13 @@
     return liElem;
   }
 
+  function deleteChildItem(item) {
+    if (item.nextSibling && item.nextSibling.nodeName.toLowerCase() === "ul") {
+      deleteChildItem(item.nextSibling);
+    }
+    item.remove();
+  }
+
   function renderNextSiblingCascaderItem(props) {
     const { dataSouce, textFieldName, valueFieldName, childrenFieldName, onChange, _cascaderList, _cascader, _this } = props;
 
@@ -115,7 +122,8 @@
 
     let ul = window.lightDesign.parseHTML(`<ul class="light-cascader-menu"></ul>`);
     if (_this.closest("ul").nextSibling && _this.closest("ul").nextSibling.nodeName.toLowerCase() === "ul") {
-      _this.closest("ul").nextSibling.remove();
+      // _this.closest("ul").nextSibling.remove();
+      deleteChildItem(_this.closest("ul").nextSibling);
     }
 
     dataSouce.forEach(item => {

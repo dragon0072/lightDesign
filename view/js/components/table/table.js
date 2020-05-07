@@ -82,9 +82,9 @@
     );
     if (!_table.querySelector(".light-table-placeholder")) {
       _table.querySelector(".light-table-content").appendChild(emptyElem);
-      if (_table.querySelector("ul.light-table-pagination")) {
-        _table.querySelector("ul.light-table-pagination").replaceWith(window.lightDesign.parseHTML(`<div id="pageable"></div>`));
-      }
+      // if (_table.querySelector("ul.light-table-pagination")) {
+      //   _table.querySelector("ul.light-table-pagination").replaceWith(window.lightDesign.parseHTML(`<div id="pageable"></div>`));
+      // }
       _table.querySelectorAll("tbody>tr.light-table-row").forEach(item => {
         item.remove();
       });
@@ -252,9 +252,11 @@
 
   function _renderBodyRow(props) {
     const { dataSource, columns, _table } = props;
-    _table.querySelectorAll(".light-table-scroll tbody tr,.light-table-fixed-left tbody tr,.light-table-fixed-right tbody tr").forEach(item => {
-      item.remove();
-    });
+    _table
+      .querySelectorAll(".light-table-scroll tbody tr,.light-table-fixed-left tbody tr,.light-table-fixed-right tbody tr,.light-table-body tbody tr")
+      .forEach(item => {
+        item.remove();
+      });
     if (dataSource.length > 0) {
       if (_table.querySelector(".light-table-placeholder")) {
         _table.querySelector(".light-table-placeholder").remove();
@@ -303,8 +305,11 @@
           });
         } else {
           let tdData = !data[field] || data[field].toString().isNullOrEmpty() ? "" : data[field];
+          if (data[field] === 0) {
+            tdData = data[field].toString();
+          }
           if (render && typeof render === "function") {
-            tdData = render(data);
+            tdData = render(data, index);
           }
           if (tdData instanceof HTMLElement || tdData instanceof Text) {
             if (tdData.nodeName.toLowerCase() === "td") {

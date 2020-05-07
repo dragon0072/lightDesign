@@ -32,113 +32,113 @@ window.onload = () => {
   // document.querySelector("#pagination").lightPagination({
   //   total: 100
   // });
-  document.querySelector("#app").lightTable({
-    id: "app",
-    pageable: true,
-    columns: [
-      {
-        field: "index",
-        title: "index",
-        render: dataItem => {
-          return "<a>123</a>";
-        },
-      },
-      {
-        field: "name",
-        title: "name",
-      },
-      {
-        field: "sex",
-        title: "sex",
-      },
-      {
-        title: "Operation",
-        fixed: "right",
-        width: 100,
-        command: [
-          {
-            name: "edit",
-            click: (dataItem, event) => {
-              console.log(dataItem);
-            },
-            isVisible: dataItem => {
-              return true;
-            },
-          },
-        ],
-      },
-    ],
-    // dataSource: {
-    //   transforms: {
-    //     type: "get",
-    //     url: "../../data/table.json",
-    //     data: res => {
-    //       return res.data.dataList;
-    //     },
-    //     total: res => {
-    //       return res.data.total;
-    //     },
-    //   },
-    // },
-    scroll: { x: 1500, y: 300 },
-    dataSource: [
-      {
-        index: 1,
-        name: "张三",
-        sex: "男",
-      },
-      {
-        index: 2,
-        name: "张三2",
-        sex: "男",
-      },
-      {
-        index: 3,
-        name: "张三3",
-        sex: "男",
-      },
-      {
-        index: 4,
-        name: "张三4",
-        sex: "男",
-      },
-      {
-        index: 5,
-        name: "张三5",
-        sex: "男",
-      },
-      {
-        index: 6,
-        name: "张三6",
-        sex: "男",
-      },
-      {
-        index: 7,
-        name: "张三7",
-        sex: "男",
-      },
-      {
-        index: 8,
-        name: "张三8",
-        sex: "男",
-      },
-      {
-        index: 9,
-        name: "张三9",
-        sex: "男",
-      },
-      {
-        index: 10,
-        name: "张三10",
-        sex: "男",
-      },
-      {
-        index: 11,
-        name: "张三11",
-        sex: "男",
-      },
-    ],
-  });
+  // document.querySelector("#app").lightTable({
+  //   id: "app",
+  //   pageable: true,
+  //   columns: [
+  //     {
+  //       field: "index",
+  //       title: "index",
+  //       render: dataItem => {
+  //         return "<a>123</a>";
+  //       },
+  //     },
+  //     {
+  //       field: "name",
+  //       title: "name",
+  //     },
+  //     {
+  //       field: "sex",
+  //       title: "sex",
+  //     },
+  //     {
+  //       title: "Operation",
+  //       fixed: "right",
+  //       width: 100,
+  //       command: [
+  //         {
+  //           name: "edit",
+  //           click: (dataItem, event) => {
+  //             console.log(dataItem);
+  //           },
+  //           isVisible: dataItem => {
+  //             return true;
+  //           },
+  //         },
+  //       ],
+  //     },
+  //   ],
+  //   // dataSource: {
+  //   //   transforms: {
+  //   //     type: "get",
+  //   //     url: "../../data/table.json",
+  //   //     data: res => {
+  //   //       return res.data.dataList;
+  //   //     },
+  //   //     total: res => {
+  //   //       return res.data.total;
+  //   //     },
+  //   //   },
+  //   // },
+  //   scroll: { x: 1500, y: 300 },
+  //   dataSource: [
+  //     {
+  //       index: 1,
+  //       name: "张三",
+  //       sex: "男",
+  //     },
+  //     {
+  //       index: 2,
+  //       name: "张三2",
+  //       sex: "男",
+  //     },
+  //     {
+  //       index: 3,
+  //       name: "张三3",
+  //       sex: "男",
+  //     },
+  //     {
+  //       index: 4,
+  //       name: "张三4",
+  //       sex: "男",
+  //     },
+  //     {
+  //       index: 5,
+  //       name: "张三5",
+  //       sex: "男",
+  //     },
+  //     {
+  //       index: 6,
+  //       name: "张三6",
+  //       sex: "男",
+  //     },
+  //     {
+  //       index: 7,
+  //       name: "张三7",
+  //       sex: "男",
+  //     },
+  //     {
+  //       index: 8,
+  //       name: "张三8",
+  //       sex: "男",
+  //     },
+  //     {
+  //       index: 9,
+  //       name: "张三9",
+  //       sex: "男",
+  //     },
+  //     {
+  //       index: 10,
+  //       name: "张三10",
+  //       sex: "男",
+  //     },
+  //     {
+  //       index: 11,
+  //       name: "张三11",
+  //       sex: "男",
+  //     },
+  //   ],
+  // });
   // document.querySelector("#app").lightModal({
   //   id: "app",
   //   title: "提示",
@@ -170,24 +170,39 @@ window.onload = () => {
   //   title: "test",
   //   content: '<div id="app1"></div>'
   // });
-  // document.querySelector("#app").lightCascader({
-  //   dataSource: [
-  //     {
-  //       code: "1",
-  //       name: "1",
-  //       children: [
-  //         {
-  //           code: "11",
-  //           name: "11"
-  //         }
-  //       ]
-  //     },
-  //     {
-  //       code: "2",
-  //       name: "2"
-  //     }
-  //   ]
-  // });
+  document.querySelector("#app").lightCascader({
+    dataSource: [
+      {
+        ParentCode: "",
+        Code: "0",
+        Name: "Root",
+        Children: [
+          {
+            ParentCode: "0",
+            Code: "84a1c39c6d06457893e1578b52a69b07",
+            Name: "1 Floor",
+            Children: [
+              { ParentCode: "84a1c39c6d06457893e1578b52a69b07", Code: "b46618674cd0425794c8f16a13d9886c", Name: "Hall 1", Children: [] },
+              { ParentCode: "84a1c39c6d06457893e1578b52a69b07", Code: "20a39168a239460b9cad99cdf66ed15a", Name: "Hall 2", Children: [] },
+            ],
+          },
+          {
+            ParentCode: "0",
+            Code: "1b58bb9c5c9a4babbd6e676e8f60ab9b",
+            Name: "2 Floor",
+            Children: [
+              { ParentCode: "1b58bb9c5c9a4babbd6e676e8f60ab9b", Code: "eecee9cfc04543f4af4c2131c317de29", Name: "High Limit", Children: [] },
+              { ParentCode: "1b58bb9c5c9a4babbd6e676e8f60ab9b", Code: "d55f118247df4b658a9a5dcb331a4818", Name: "GM VIP Room", Children: [] },
+              { ParentCode: "1b58bb9c5c9a4babbd6e676e8f60ab9b", Code: "a80f520e95864daa823841c7dc67d8ad", Name: "SW VIP Room", Children: [] },
+            ],
+          },
+        ],
+      },
+    ],
+    textFieldName: "Name",
+    valueFieldName: "Code",
+    childrenFieldName: "Children",
+  });
 };
 
 // lightNotification({
