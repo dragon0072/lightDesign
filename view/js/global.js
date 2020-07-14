@@ -12,8 +12,55 @@
       _default: [0, "", ""],
     };
   wrapMap.optgroup = wrapMap.option;
-  wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
+  wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption =
+    wrapMap.thead;
   wrapMap.th = wrapMap.td;
+
+  let xhrProto = XMLHttpRequest.prototype,
+    origOpen = xhrProto.open,
+    origSend = xhrProto.send;
+
+  xhrProto.open = function (method = "", url = "") {
+    this._url = url;
+    this._method = method;
+    this._params = null;
+    //如果是get请求时，将请求参数，转换为Object格式保存
+    if (method.toLowerCase() === "get") {
+      let temp = url.split("?"),
+        query = "",
+        arrQuery = [],
+        params = {};
+      if (temp.length > 0) {
+        query = temp[1];
+        arrQuery = query.split("&");
+        Object.keys(arrQuery).forEach((item) => {
+          const result = arrQuery[item].split("=");
+          const key = result[0];
+          const value = result[1];
+          params[key] = decodeURI(value);
+        });
+        this._params = params;
+      }
+    }
+    return origOpen.apply(this, arguments);
+  };
+
+  xhrProto.send = function (body) {
+    if (
+      this._method.toLowerCase() !== "get" &&
+      this._method.toLowerCase() !== "delete" &&
+      body !== null
+      // typeof body === "object"
+    ) {
+      try {
+        const params = JSON.parse(body);
+        this._params = params;
+      } catch (error) {
+        this._params = body;
+      }
+    }
+    return origSend.apply(this, arguments);
+  };
 
   //定义统一的xmlhttp请求
   window.lightDesignXhr = null;
@@ -178,7 +225,10 @@
       const { params, headers, async = false } = options;
       if (window.lightDesignXhr != null) {
         window.lightDesignXhr.open("POST", url, false);
-        window.lightDesignXhr.setRequestHeader("Content-Type", "application/json");
+        window.lightDesignXhr.setRequestHeader(
+          "Content-Type",
+          "application/json"
+        );
         if (objectIsNotEmpty(headers)) {
           setRequestHeader(window.lightDesignXhr, headers);
         }
@@ -225,7 +275,10 @@
         }
         window.lightDesignXhr.send(null);
         window.lightDesignXhr.onreadystatechange = () => {
-          if (window.lightDesignXhr.status === 200 && window.lightDesignXhr.readyState === 4) {
+          if (
+            window.lightDesignXhr.status === 200 &&
+            window.lightDesignXhr.readyState === 4
+          ) {
             let blob = window.lightDesignXhr.response;
             if (window.navigator.msSaveOrOpenBlob) {
               navigator.msSaveBlob(blob, filename);
@@ -244,7 +297,9 @@
       }
     },
     guid: () => {
-      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
+        c
+      ) {
         var r = (Math.random() * 16) | 0,
           v = c == "x" ? r : (r & 0x3) | 0x8;
         return v.toString(16);
@@ -260,7 +315,11 @@
       //如果没有key值，则返回空
       if (!id || id.isNullOrEmpty()) return "";
       let lngData = window.lightDesign.languageData[lngType];
-      if (lngData instanceof Object && lngData !== undefined && lngData !== null) {
+      if (
+        lngData instanceof Object &&
+        lngData !== undefined &&
+        lngData !== null
+      ) {
         let str = "";
         for (const key in lngData) {
           if (lngData.hasOwnProperty(key)) {
@@ -280,7 +339,7 @@
     /**
      * 获取当前dom在页面中的距离左侧多少像素点
      */
-    getElementLeft: element => {
+    getElementLeft: (element) => {
       var actualLeft = element.offsetLeft;
       var current = element.offsetParent;
 
@@ -294,7 +353,7 @@
     /**
      * 获取当前dom在页面中的距离顶部多少像素点
      */
-    getElementTop: element => {
+    getElementTop: (element) => {
       var actualTop = element.offsetTop;
       var current = element.offsetParent;
 
@@ -306,7 +365,9 @@
       return actualTop;
     },
   };
-  window.lightDesign = window.lightDesign ? { ...window.lightDesign, ...lightDesignGlobal } : lightDesignGlobal;
+  window.lightDesign = window.lightDesign
+    ? { ...window.lightDesign, ...lightDesignGlobal }
+    : lightDesignGlobal;
 
   //字符串去除空格
   String.prototype.replaceSpace = function () {
@@ -320,7 +381,11 @@
 
   //字符串判断是否为空
   String.prototype.isNullOrEmpty = function () {
-    if (this == null || this == undefined || this.replace(/(^\s*)|(\s*$)/g, "") == "") {
+    if (
+      this == null ||
+      this == undefined ||
+      this.replace(/(^\s*)|(\s*$)/g, "") == ""
+    ) {
       return true;
     } else {
       return false;
