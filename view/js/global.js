@@ -30,7 +30,7 @@
         query = "",
         arrQuery = [],
         params = {};
-      if (temp.length > 0) {
+      if (temp.length > 1) {
         query = temp[1];
         arrQuery = query.split("&");
         Object.keys(arrQuery).forEach((item) => {
@@ -256,7 +256,7 @@
       }
     },
     httpDownload: function (url, options) {
-      const { params, headers } = options;
+      const { params, headers, filename } = options;
       //拼接url加query
       var query = "",
         arrQuery = [];
@@ -268,8 +268,8 @@
         url += "?" + query;
       }
       if (window.lightDesignXhr != null) {
-        window.lightDesignXhr.responseType = "blob";
         window.lightDesignXhr.open("GET", url, true);
+        window.lightDesignXhr.responseType = "blob";
         if (objectIsNotEmpty(headers)) {
           setRequestHeader(window.lightDesignXhr, headers);
         }
@@ -443,6 +443,12 @@
     switch (str) {
       case "yyyy-MM-dd HH:mm:ss":
         strDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        break;
+      case "yyyy-MM-ddThh:mm":
+        strDate = `${year}-${month}-${day}T${hours}:${minutes}`;
+        break;
+      case "yyyy-MM-dd":
+        strDate = `${year}-${month}-${day}`;
         break;
       default:
         strDate = this.toString();

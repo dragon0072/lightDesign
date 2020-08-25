@@ -71,7 +71,7 @@
         parentElem
           .querySelector(`.light-pagination-item-${oldIndex}`)
           .classList.remove(pageItemActiveClass);
-        elems.forEach(item => {
+        elems.forEach((item) => {
           if (item.title !== "1" && parseInt(item.title) !== pageCount) {
             item.remove();
           }
@@ -160,7 +160,7 @@
       }" tabindex="0"><a>${page}</a></li>`
     );
 
-    pageNumDom.addEventListener("click", event => {
+    pageNumDom.addEventListener("click", (event) => {
       let parentElem = event.currentTarget.closest("ul");
       let currentElem = parentElem.querySelector(`.${pageItemActiveClass}`);
       if (
@@ -218,7 +218,7 @@
         </li>`
       );
     }
-    jumpDom.addEventListener("click", event => {
+    jumpDom.addEventListener("click", (event) => {
       let elem = event.currentTarget;
       let parentElem = elem.closest("ul");
       let isJumpSuccess = true;
@@ -292,7 +292,10 @@
       }
     }
 
-    nextDom.addEventListener("click", event => {
+    nextDom.addEventListener("click", (event) => {
+      if (event.currentTarget.classList.contains(pageDisabledClass)) {
+        return false;
+      }
       let index = parseInt(
         dom.closest("ul").querySelector(`.${pageItemActiveClass}`).title || 1
       );
@@ -309,7 +312,11 @@
       }
     });
 
-    prevDom.addEventListener("click", event => {
+    prevDom.addEventListener("click", (event) => {
+      if (event.currentTarget.classList.contains(pageDisabledClass)) {
+        return false;
+      }
+
       let index = parseInt(
         dom.closest("ul").querySelector(`.${pageItemActiveClass}`).title
       );
@@ -332,7 +339,7 @@
     dom.pagination = {
       pageCount,
       pageSize,
-      index: current
+      index: current,
     };
   }
 
@@ -362,7 +369,7 @@
       simple = false,
       total = 0,
       onChange,
-      onShowSizeChange
+      onShowSizeChange,
     } = props;
 
     let paginationDom = window.lightDesign.parseHTML(
@@ -383,7 +390,7 @@
     return paginationDom;
   }
 
-  HTMLElement.prototype.lightPagination = function(props) {
+  HTMLElement.prototype.lightPagination = function (props) {
     this.replaceWith(Pagination(props));
   };
 })();

@@ -13,7 +13,10 @@
   }
 
   function syncScroller() {
-    let nodes = Array.prototype.filter.call(arguments, item => item instanceof HTMLElement);
+    let nodes = Array.prototype.filter.call(
+      arguments,
+      (item) => item instanceof HTMLElement
+    );
     let max = nodes.length;
     if (!max || max === 1) return;
     let sign = 0; // 用于标注
@@ -39,7 +42,9 @@
   function _toggleLoading(_table) {
     if (_table.querySelector(".light-table-spin-holder")) {
       _table.querySelector(".light-table-spin-holder").parentElement.remove();
-      _table.querySelector(".light-spin-container").classList.remove("light-spin-blur");
+      _table
+        .querySelector(".light-spin-container")
+        .classList.remove("light-spin-blur");
     } else {
       _table.querySelector(".light-spin-nested-loading").insertBefore(
         window.lightDesign.parseHTML(
@@ -56,7 +61,9 @@
         ),
         _table.querySelector(".light-spin-container")
       );
-      _table.querySelector(".light-spin-container").classList.add("light-spin-blur");
+      _table
+        .querySelector(".light-spin-container")
+        .classList.add("light-spin-blur");
     }
   }
 
@@ -76,7 +83,9 @@
                 </g>
               </svg>
             </div>
-            <p class="light-empty-description">${window.lightDesign.formatMessage("common-noData")}</p>
+            <p class="light-empty-description">${window.lightDesign.formatMessage(
+              "common-noData"
+            )}</p>
           </div>
         </div>`
     );
@@ -85,7 +94,7 @@
       // if (_table.querySelector("ul.light-table-pagination")) {
       //   _table.querySelector("ul.light-table-pagination").replaceWith(window.lightDesign.parseHTML(`<div id="pageable"></div>`));
       // }
-      _table.querySelectorAll("tbody>tr.light-table-row").forEach(item => {
+      _table.querySelectorAll("tbody>tr.light-table-row").forEach((item) => {
         item.remove();
       });
     }
@@ -97,7 +106,7 @@
    */
   function returnColspan(columns, tableWidth) {
     let colspan = ["<colgroup>"];
-    columns.forEach(item => {
+    columns.forEach((item) => {
       const { width = "auto" } = item;
       let w = isNaN(width) ? width : width + "px";
       if (!isNaN(width)) {
@@ -118,12 +127,16 @@
    * @param {*} columns
    */
   function returnTHeader(columns) {
-    let tHeader = window.lightDesign.parseHTML(`<thead class="light-table-thead"><tr></tr></thead>`);
+    let tHeader = window.lightDesign.parseHTML(
+      `<thead class="light-table-thead"><tr></tr></thead>`
+    );
     columns.forEach((item, index) => {
       const { ellipsis = false, title, align = "center" } = item;
       tHeader.querySelector("tr").appendChild(
         window.lightDesign.parseHTML(
-          `<th class="${ellipsis ? "light-table-row-cell-ellipsis" : ""} light-table-row-cell-break-word ${
+          `<th class="${
+            ellipsis ? "light-table-row-cell-ellipsis" : ""
+          } light-table-row-cell-break-word ${
             index === columns.length - 1 ? "" : "light-table-row-cell-last"
           }" style="text-align: ${align};">
             <span class="light-table-header-column">
@@ -200,15 +213,31 @@
       _table.querySelector(".light-table-content").appendChild(fixTable);
     }
 
-    columns.forEach(item => {
-      const { fixed = "right", ellipsis = false, title, width = "auto", align = "center" } = item;
+    columns.forEach((item) => {
+      const {
+        fixed = "right",
+        ellipsis = false,
+        title,
+        width = "auto",
+        align = "center",
+      } = item;
       let w = isNaN(width) ? width : width + "px";
-      _table.querySelectorAll(`.light-table-fixed-${fixed.toLowerCase()} colgroup`).forEach(item => {
-        item.appendChild(window.lightDesign.parseHTML(`<col style="width: ${w}; min-width: ${w};">`));
-      });
-      _table.querySelector(`.light-table-fixed-${fixed.toLowerCase()} thead tr`).appendChild(
-        window.lightDesign.parseHTML(
-          `<th class="${ellipsis ? "light-table-row-cell-ellipsis" : ""} light-table-row-cell-break-word" style="text-align: ${align};">
+      _table
+        .querySelectorAll(`.light-table-fixed-${fixed.toLowerCase()} colgroup`)
+        .forEach((item) => {
+          item.appendChild(
+            window.lightDesign.parseHTML(
+              `<col style="width: ${w}; min-width: ${w};">`
+            )
+          );
+        });
+      _table
+        .querySelector(`.light-table-fixed-${fixed.toLowerCase()} thead tr`)
+        .appendChild(
+          window.lightDesign.parseHTML(
+            `<th class="${
+              ellipsis ? "light-table-row-cell-ellipsis" : ""
+            } light-table-row-cell-break-word" style="text-align: ${align};">
                 <span class="light-table-header-column">
                     <div>
                         <span class="light-table-column-title">${title}</span>
@@ -216,18 +245,21 @@
                     </div>
                 </span>
             </th>`
-        )
-      );
+          )
+        );
     });
 
-    syncScroller(_table.querySelector("div.light-table-body"), ..._table.querySelectorAll(".light-table-body-inner"));
+    syncScroller(
+      _table.querySelector("div.light-table-body"),
+      ..._table.querySelectorAll(".light-table-body-inner")
+    );
   }
 
   /**
    * 生成翻页控件方法
    * @param {Boolean/JSON} pageable
    */
-  function _renderTablePagiantion(pageable, _table) {
+  function _renderTablePagiantion(pageable, dataSource, columns, _table) {
     if (_table.querySelector("ul.light-pagination.light-table-pagination")) {
       return;
     }
@@ -242,19 +274,24 @@
         onChange: (current, pageSize) => {
           _table.lightTable.pagination.pageIndex = current;
           _table.lightTable.pagination.pageSize = pageSize;
-          _table.lightTable.event.refresh();
+          // _table.lightTable.event.refresh();
+          _refreshTableData(dataSource, columns, _table);
           return true;
         },
       });
-      _table.querySelector("ul.light-pagination").classList.add("light-table-pagination");
+      _table
+        .querySelector("ul.light-pagination")
+        .classList.add("light-table-pagination");
     }
   }
 
   function _renderBodyRow(props) {
     const { dataSource, columns, _table } = props;
     _table
-      .querySelectorAll(".light-table-scroll tbody tr,.light-table-fixed-left tbody tr,.light-table-fixed-right tbody tr,.light-table-body tbody tr")
-      .forEach(item => {
+      .querySelectorAll(
+        ".light-table-scroll tbody tr,.light-table-fixed-left tbody tr,.light-table-fixed-right tbody tr,.light-table-body tbody tr"
+      )
+      .forEach((item) => {
         item.remove();
       });
     if (dataSource.length > 0) {
@@ -279,11 +316,20 @@
         `<tr id="${data._id}" class="light-table-row light-table-row-level-0" data-row-key="${index}">
         </tr>`
       );
-      columns.forEach(column => {
-        const { field, fixed, align = "center", ellipsis = false, render, command } = column;
+      columns.forEach((column) => {
+        const {
+          field,
+          fixed,
+          align = "center",
+          ellipsis = false,
+          render,
+          command,
+        } = column;
         let columnElem;
         if (command && command.length > 0) {
-          columnElem = window.lightDesign.parseHTML(`<td class="light-table-row-cell-ellipsis" style="text-align:${align}"><span></span></td>`);
+          columnElem = window.lightDesign.parseHTML(
+            `<td class="light-table-row-cell-ellipsis" style="text-align:${align}"><span></span></td>`
+          );
           command.forEach((item, index, arr) => {
             const { name, click, isVisible } = item;
             let disable = true;
@@ -292,19 +338,26 @@
             }
             if (disable) {
               let commandElem = window.lightDesign.parseHTML(`<a>${name}</a>`);
-              commandElem.addEventListener("click", event => {
+              commandElem.addEventListener("click", (event) => {
                 if (click && typeof click === "function") {
                   click(data, event);
                 }
               });
               columnElem.appendChild(commandElem);
               if (index + 1 < arr.length) {
-                columnElem.appendChild(window.lightDesign.parseHTML(`<div class="light-divider light-divider-vertical" role="separator"></div>`));
+                columnElem.appendChild(
+                  window.lightDesign.parseHTML(
+                    `<div class="light-divider light-divider-vertical" role="separator"></div>`
+                  )
+                );
               }
             }
           });
         } else {
-          let tdData = !data[field] || data[field].toString().isNullOrEmpty() ? "" : data[field];
+          let tdData =
+            !data[field] || data[field].toString().isNullOrEmpty()
+              ? ""
+              : data[field];
           if (data[field] === 0) {
             tdData = data[field].toString();
           }
@@ -322,7 +375,9 @@
               columnElem.style.textAlign = align;
             } else {
               columnElem = window.lightDesign.parseHTML(
-                `<td class="${ellipsis ? "light-table-row-cell-ellipsis" : ""} light-table-row-cell-break-word" style="text-align:${align};"
+                `<td class="${
+                  ellipsis ? "light-table-row-cell-ellipsis" : ""
+                } light-table-row-cell-break-word" style="text-align:${align};"
                title="${data[field] || ""}"></td>`
               );
               columnElem.appendChild(tdData);
@@ -331,7 +386,9 @@
             columnElem = window.lightDesign.parseHTML(
               `<td class="${
                 ellipsis ? "light-table-row-cell-ellipsis" : ""
-              } light-table-row-cell-break-word" style="text-align:${align};" title="${tdData.toString().replace(/<\/?.+?\/?>/g, "")}">${tdData}</td>`
+              } light-table-row-cell-break-word" style="text-align:${align};" title="${tdData
+                .toString()
+                .replace(/<\/?.+?\/?>/g, "")}">${tdData}</td>`
             );
           }
         }
@@ -350,10 +407,14 @@
       if (isFixed) {
         _table.querySelector(".light-table-scroll tbody").appendChild(tr);
         if (_table.querySelector(".light-table-fixed-left tbody")) {
-          _table.querySelector(".light-table-fixed-left tbody").appendChild(fixLeftTr);
+          _table
+            .querySelector(".light-table-fixed-left tbody")
+            .appendChild(fixLeftTr);
         }
         if (_table.querySelector(".light-table-fixed-right tbody")) {
-          _table.querySelector(".light-table-fixed-right tbody").appendChild(fixRightTr);
+          _table
+            .querySelector(".light-table-fixed-right tbody")
+            .appendChild(fixRightTr);
         }
       } else {
         _table.querySelector("tbody").appendChild(tr);
@@ -372,13 +433,17 @@
       const { pageIndex, pageSize } = _table.lightTable.pagination;
       let filterData = [];
       if (!isHttp) {
-        filterData = dataSource.filter((item, index) => index >= pageIndex * pageSize - pageSize && index < pageIndex * pageSize);
+        filterData = dataSource.filter(
+          (item, index) =>
+            index >= pageIndex * pageSize - pageSize &&
+            index < pageIndex * pageSize
+        );
       } else {
         filterData = dataSource;
       }
 
-      _table.querySelectorAll("tbody").forEach(body => {
-        body.querySelectorAll("tr").forEach(tr => {
+      _table.querySelectorAll("tbody").forEach((body) => {
+        body.querySelectorAll("tr").forEach((tr) => {
           tr.remove();
         });
       });
@@ -410,10 +475,16 @@
     if (scroll) {
       const { x = tableWidth, y = 0 } = scroll;
 
-      _table.querySelector(".light-table-content").appendChild(window.lightDesign.parseHTML(`<div class="light-table-scroll"></div>`));
+      _table
+        .querySelector(".light-table-content")
+        .appendChild(
+          window.lightDesign.parseHTML(`<div class="light-table-scroll"></div>`)
+        );
 
       if (y > 0) {
-        _table.querySelector(".light-table").classList.add("light-table-fixed-header");
+        _table
+          .querySelector(".light-table")
+          .classList.add("light-table-fixed-header");
         //生成表头
         _table.querySelector(".light-table-scroll").appendChild(
           window.lightDesign.parseHTML(
@@ -423,7 +494,9 @@
           )
         );
         //生成表头
-        _table.querySelector(".light-table-header table").appendChild(returnTHeader(columns));
+        _table
+          .querySelector(".light-table-header table")
+          .appendChild(returnTHeader(columns));
         //生成表体
         _table.querySelector(".light-table-scroll").appendChild(
           window.lightDesign.parseHTML(
@@ -432,10 +505,16 @@
               </div>`
           )
         );
-        _table.querySelector(".light-table-body table").appendChild(window.lightDesign.parseHTML(`<tbody class="light-table-tbody"></tbody>`));
+        _table
+          .querySelector(".light-table-body table")
+          .appendChild(
+            window.lightDesign.parseHTML(
+              `<tbody class="light-table-tbody"></tbody>`
+            )
+          );
 
         //判断，是否有需要固定的列
-        let fixColumns = columns.filter(item => item.fixed);
+        let fixColumns = columns.filter((item) => item.fixed);
         renderFixedColumn(fixColumns, y, _table);
       } else {
         _table.querySelector(".light-table-scroll").appendChild(
@@ -450,28 +529,61 @@
         _table.querySelector("table").appendChild(returnTHeader(columns));
 
         //生成表体
-        _table.querySelector("table").appendChild(window.lightDesign.parseHTML(`<tbody class="light-table-tbody"></tbody>`));
+        _table
+          .querySelector("table")
+          .appendChild(
+            window.lightDesign.parseHTML(
+              `<tbody class="light-table-tbody"></tbody>`
+            )
+          );
       }
 
-      _table.querySelector("div.light-table-body").addEventListener("scroll", event => {
-        event.stopPropagation();
-        //表头随表体滚动
-        _table.querySelector("div.light-table-header").scrollLeft = event.currentTarget.scrollLeft;
+      _table
+        .querySelector("div.light-table-body")
+        .addEventListener("scroll", (event) => {
+          event.stopPropagation();
+          //表头随表体滚动
+          _table.querySelector("div.light-table-header").scrollLeft =
+            event.currentTarget.scrollLeft;
 
-        if (0 < event.currentTarget.scrollLeft < event.currentTarget.scrollWidth) {
-          _table.querySelector(".light-table").classList.remove("light-table-scroll-position-left");
-          _table.querySelector(".light-table").classList.remove("light-table-scroll-position-right");
-          _table.querySelector(".light-table").classList.add("light-table-scroll-position-middle");
-        } else if (event.currentTarget.scrollLeft === event.currentTarget.scrollWidth) {
-          _table.querySelector(".light-table").classList.remove("light-table-scroll-position-left");
-          _table.querySelector(".light-table").classList.add("light-table-scroll-position-right");
-          _table.querySelector(".light-table").classList.remove("light-table-scroll-position-middle");
-        } else {
-          _table.querySelector(".light-table").classList.add("light-table-scroll-position-left");
-          _table.querySelector(".light-table").classList.remove("light-table-scroll-position-right");
-          _table.querySelector(".light-table").classList.remove("light-table-scroll-position-middle");
-        }
-      });
+          if (
+            0 <
+            event.currentTarget.scrollLeft <
+            event.currentTarget.scrollWidth
+          ) {
+            _table
+              .querySelector(".light-table")
+              .classList.remove("light-table-scroll-position-left");
+            _table
+              .querySelector(".light-table")
+              .classList.remove("light-table-scroll-position-right");
+            _table
+              .querySelector(".light-table")
+              .classList.add("light-table-scroll-position-middle");
+          } else if (
+            event.currentTarget.scrollLeft === event.currentTarget.scrollWidth
+          ) {
+            _table
+              .querySelector(".light-table")
+              .classList.remove("light-table-scroll-position-left");
+            _table
+              .querySelector(".light-table")
+              .classList.add("light-table-scroll-position-right");
+            _table
+              .querySelector(".light-table")
+              .classList.remove("light-table-scroll-position-middle");
+          } else {
+            _table
+              .querySelector(".light-table")
+              .classList.add("light-table-scroll-position-left");
+            _table
+              .querySelector(".light-table")
+              .classList.remove("light-table-scroll-position-right");
+            _table
+              .querySelector(".light-table")
+              .classList.remove("light-table-scroll-position-middle");
+          }
+        });
     } else {
       _table.querySelector(".light-table-content").appendChild(
         window.lightDesign.parseHTML(
@@ -482,8 +594,16 @@
           </div>`
         )
       );
-      _table.querySelector(".light-table-body table").appendChild(returnTHeader(columns));
-      _table.querySelector(".light-table-body table").appendChild(window.lightDesign.parseHTML(`<tbody class="light-table-tbody"></tbody>`));
+      _table
+        .querySelector(".light-table-body table")
+        .appendChild(returnTHeader(columns));
+      _table
+        .querySelector(".light-table-body table")
+        .appendChild(
+          window.lightDesign.parseHTML(
+            `<tbody class="light-table-tbody"></tbody>`
+          )
+        );
     }
     // _renderEmptyDataDom(_table);
   }
@@ -499,7 +619,15 @@
       _table.lightTable.data.total = dataSource.length;
       _table.lightTable.data.isHttp = false;
     } else {
-      const { url, type = "GET", params, headers, data, total, requestEnd } = dataSource.transforms;
+      const {
+        url,
+        type = "GET",
+        params,
+        headers,
+        data,
+        total,
+        requestEnd,
+      } = dataSource.transforms;
       let query = params,
         reqeustHeader = headers;
       if (params && typeof params === "function") {
@@ -533,13 +661,17 @@
           _table.lightTable.data.total = total(res) || 0;
         }
 
-        if (_table.lightTable.data.dataSource.length > 0 && _table.lightTable.data.total === 0) {
-          _table.lightTable.data.total = _table.lightTable.data.dataSource.length;
+        if (
+          _table.lightTable.data.dataSource.length > 0 &&
+          _table.lightTable.data.total === 0
+        ) {
+          _table.lightTable.data.total =
+            _table.lightTable.data.dataSource.length;
         }
         _table.lightTable.data.isHttp = true;
       }
     }
-    _table.lightTable.data.dataSource.forEach(item => {
+    _table.lightTable.data.dataSource.forEach((item) => {
       item._id = window.lightDesign.guid();
     });
   }
@@ -569,7 +701,9 @@
       _table.lightTable.event.refresh();
       return;
     }
-    let fileterData = _table.lightTable.data.dataSource.filter(item => item._id === data._id);
+    let fileterData = _table.lightTable.data.dataSource.filter(
+      (item) => item._id === data._id
+    );
     let index = _table.lightTable.data.dataSource.indexOf(fileterData);
     _table.lightTable.data.dataSource.splice(index, 1, data);
     _refreshTableData(_table.lightTable.data.dataSource, columns, _table);
@@ -606,7 +740,13 @@
     }
    */
   function Table(props) {
-    const { bordered = true, columns = [], id, pageable = true, scroll } = props;
+    const {
+      bordered = true,
+      columns = [],
+      id,
+      pageable = true,
+      scroll,
+    } = props;
     let { dataSource = [] } = props;
 
     //生成table主体
@@ -626,7 +766,9 @@
 
     //判断，是否需要添加 border
     if (bordered) {
-      _table.querySelector(".light-table").classList.add("light-table-bordered");
+      _table
+        .querySelector(".light-table")
+        .classList.add("light-table-bordered");
     }
 
     //将数据信息，绑定到dom
@@ -653,7 +795,7 @@
 
     //生成翻页控件
     if (pageable) {
-      _renderTablePagiantion(pageable, _table);
+      _renderTablePagiantion(pageable, dataSource, columns, _table);
     }
 
     _renderBody({ columns, _table });
@@ -665,26 +807,45 @@
     _table.lightTable.event = {
       refresh: () => {
         _refreshTableData(dataSource, columns, _table);
+        if (pageable) {
+          if (_table.querySelector(".light-table-pagination")) {
+            _table
+              .querySelector(".light-table-pagination")
+              .replaceWith(
+                window.lightDesign.parseHTML('<div id="pageable"></div>')
+              );
+          }
+          _renderTablePagiantion(pageable, dataSource, columns, _table);
+          _table
+            .querySelector("ul.light-pagination")
+            .classList.add("light-table-pagination");
+        }
       },
-      add: data => {
+      add: (data) => {
         _addNewRecord(data, columns, _table);
       },
-      edit: data => {
+      edit: (data) => {
         _editRecord(data, columns, _table);
       },
-      remove: elem => {
+      remove: (elem) => {
         const _id = elem.rowData ? elem.rowData._id : "";
         _removeRecord(_id, columns, _table);
       },
-      setDataSource: data => {
+      setDataSource: (data) => {
         dataSource = data;
         _refreshTableData(dataSource, columns, _table);
         if (pageable) {
           if (_table.querySelector(".light-table-pagination")) {
-            _table.querySelector(".light-table-pagination").replaceWith(window.lightDesign.parseHTML('<div id="pageable"></div>'));
+            _table
+              .querySelector(".light-table-pagination")
+              .replaceWith(
+                window.lightDesign.parseHTML('<div id="pageable"></div>')
+              );
           }
-          _renderTablePagiantion(pageable, _table);
-          _table.querySelector("ul.light-pagination").classList.add("light-table-pagination");
+          _renderTablePagiantion(pageable, dataSource, columns, _table);
+          _table
+            .querySelector("ul.light-pagination")
+            .classList.add("light-table-pagination");
         }
       },
     };
