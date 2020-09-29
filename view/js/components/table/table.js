@@ -806,6 +806,7 @@
 
     _table.lightTable.event = {
       refresh: () => {
+        _table.lightTable.pagination.pageIndex = 1;
         _refreshTableData(dataSource, columns, _table);
         if (pageable) {
           if (_table.querySelector(".light-table-pagination")) {

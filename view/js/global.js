@@ -296,6 +296,85 @@
         alert("Your browser does not support XMLHTTP.");
       }
     },
+    asyncRequest: (url, options = {}) => {
+      return new Promise((resolve, reject) => {
+        try {
+          let xhr = new XMLHttpRequest();
+          const {
+            type = "get",
+            params,
+            headers,
+            beforeSend,
+            complete,
+          } = options;
+
+          //如果是get请求时，把请求参数，拼接到链接后
+          if (type.toLowerCase() === "get") {
+            let query = "";
+            if (objectIsNotEmpty(params)) {
+              query = urlJsonToString(params);
+              url += "?" + query;
+            }
+          }
+
+          //请求前事件
+          xhr.addEventListener("loadstart", (e) => {
+            if (beforeSend && typeof beforeSend === "function") beforeSend(xhr);
+          });
+
+          //请求后事件
+          xhr.addEventListener("loadend", (e) => {
+            if (complete && typeof complete === "function") complete(xhr);
+          });
+
+          //获取请求结果
+          xhr.addEventListener("readystatechange", (e) => {
+            if (xhr.readyState == "4" && xhr.status == "200") {
+              resolve(xhr);
+            }
+          });
+
+          // 设置期望的返回数据类型
+          xhr.responseType = "json";
+
+          xhr.open(type, url);
+          if (objectIsNotEmpty(headers)) {
+            setRequestHeader(xhr, headers);
+          }
+          if (
+            type.toLowerCase() === "post" &&
+            typeof params === "object" &&
+            !(params instanceof FormData)
+          ) {
+            xhr.setRequestHeader("Content-Type", "application/json");
+          }
+          xhr.send(
+            type.toLowerCase() === "get"
+              ? null
+              : lightDesignGlobal.getQueryData(params)
+          );
+        } catch (error) {
+          reject("Your browser does not support XMLHTTP.");
+        }
+      });
+    },
+    //获取ajax请求参数
+    getQueryData: (data) => {
+      if (!data) {
+        return null;
+      }
+
+      if (typeof data === "string") {
+        return data;
+      }
+
+      if (data instanceof FormData) {
+        return data;
+      }
+
+      // return http.getQueryString(data);
+      return JSON.stringify(data);
+    },
     guid: () => {
       return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
         c

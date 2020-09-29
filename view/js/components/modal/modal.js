@@ -39,7 +39,7 @@
       cancelText,
       onCancel,
       destroyOnClose,
-      afterClose
+      afterClose,
     } = params;
     if (typeof footer === "boolean" && !footer) {
       _modal.querySelector(".light-modal-footer").remove();
@@ -54,7 +54,7 @@
           </div>`
         )
       );
-      elems.querySelector(".btn-cancel").addEventListener("click", event => {
+      elems.querySelector(".btn-cancel").addEventListener("click", (event) => {
         let closeSuccess = true;
         if (onCancel && typeof onCancel === "function") {
           closeSuccess = onCancel(_modal);
@@ -63,15 +63,21 @@
         if (closeSuccess)
           _modalCloseHandle({ destroyOnClose, afterClose }, _modal);
       });
-      elems.querySelector(".btn-Ok").addEventListener("click", event => {
-        let okSuccess = true;
-        if (onOk && typeof onOk === "function") {
-          okSuccess = onOk(_modal);
-          okSuccess = okSuccess === undefined ? true : okSuccess;
-        }
-        if (okSuccess)
-          _modalCloseHandle({ destroyOnClose, afterClose }, _modal);
-      });
+      elems
+        .querySelector(".btn-Ok")
+        .addEventListener("click", async (event) => {
+          let okSuccess = true;
+          if (onOk && typeof onOk === "function") {
+            if (onOk[Symbol.toStringTag] === "AsyncFunction") {
+              okSuccess = await onOk(_modal);
+            } else {
+              okSuccess = onOk(_modal);
+            }
+            okSuccess = okSuccess === undefined ? true : okSuccess;
+          }
+          if (okSuccess)
+            _modalCloseHandle({ destroyOnClose, afterClose }, _modal);
+        });
     } else if (typeof footer === "object" && footer instanceof HTMLElement) {
       _modal.querySelector(".light-modal-footer").appendChild(footer);
     }
@@ -100,7 +106,7 @@
       cancelText = window.lightDesign.formatMessage("modal-button-cancel"),
       onOk,
       onCancel,
-      width = "520px"
+      width = "520px",
     } = props;
 
     let _modal = window.lightDesign.parseHTML(
@@ -149,7 +155,7 @@
         cancelText,
         onCancel,
         destroyOnClose,
-        afterClose
+        afterClose,
       },
       _modal
     );
@@ -159,7 +165,7 @@
 
     _modal
       .querySelector(".light-modal-close")
-      .addEventListener("click", event => {
+      .addEventListener("click", (event) => {
         _modalCloseHandle({ destroyOnClose, afterClose }, _modal);
       });
 
@@ -167,14 +173,14 @@
       event: {
         close: () => {
           _modalCloseHandle({ destroyOnClose, afterClose }, _modal);
-        }
-      }
+        },
+      },
     };
 
     return _modal;
   }
 
-  HTMLElement.prototype.lightModal = function(props) {
+  HTMLElement.prototype.lightModal = function (props) {
     this.replaceWith(Modal(props));
   };
 })();
